@@ -1,15 +1,10 @@
+use stopwatch::Stopwatch;
 use anyhow::Context;
-use serde::{Deserialize, Serialize};
-use sha3::Digest;
 use std::convert::TryInto;
-use std::env;
 use std::fs;
 use std::fs::File;
 use std::io::BufWriter;
-use std::io::Bytes;
-use std::io::Read;
 use std::io::Write;
-use std::option::Option;
 use std::path::Path;
 use std::path::PathBuf;
 
@@ -19,6 +14,7 @@ use std::path::PathBuf;
 ///
 /// * `PATH` - Path to a file or directory (required)
 pub fn compress_archive(matches: &clap::ArgMatches) {
+    let mut timer = Stopwatch::start_new();
     let paths: Vec<&str> = matches
         .values_of("PATH")
         .with_context(|| "No file paths were given".to_string())
@@ -52,12 +48,13 @@ pub fn compress_archive(matches: &clap::ArgMatches) {
     let tar_bytes: &Vec<u8> = tar.get_ref();
     let compressed_archive_file = lz4_flex::compress_prepend_size(tar_bytes);
     write_file(&output_path, &compressed_archive_file);
+    timer.stop();
 
     let uncompressed_size_bytes: [u8; 4] = compressed_archive_file[0..4].try_into().unwrap();
     let uncompressed_size: u32 = u32::from_le_bytes(uncompressed_size_bytes);
     println!(
-        "Wrote package '{}' to filesystem (path: {}, uncompressed size: {} bytes)",
-        output_file_name, output_path, uncompressed_size
+        "Wrote archive '{}' to filesystem (path: {}, uncompressed size: {} bytes) in {} seconds.",
+        output_file_name, output_path, uncompressed_size, (timer.elapsed_ms() as f32 / 1000.0)
     );
 }
 
@@ -67,6 +64,7 @@ pub fn compress_archive(matches: &clap::ArgMatches) {
 ///
 /// * `PATH` - Path to an archive (required)
 pub fn extract_archive(matches: &clap::ArgMatches) {
+    let mut timer = Stopwatch::start_new();
     let paths: Vec<&str> = matches
         .values_of("PATH")
         .with_context(|| "No file paths were given".to_string())
@@ -85,15 +83,14 @@ pub fn extract_archive(matches: &clap::ArgMatches) {
         let mut extracted_package = tar::Archive::new(decompressed_package_bytes);
         extracted_package
             .unpack(&output_path)
-            .expect("Could not extract archive");
-
-        let file_pathbuf = PathBuf::from(output_path);
-        let file_name = file_pathbuf.file_stem().unwrap().to_str().unwrap();
-        println!(
-            "Extracted archive '{}' to filesystem (path: {})",
-            file_name, output_path
-        );
+            .expect("Could not extract archive");        
     }
+    
+    timer.stop();
+    println!(
+        "Extracted archive(s) to filesystem (path: {}) in {} seconds.",
+        output_path, (timer.elapsed_ms() as f32 / 1000.0)
+    );
 }
 
 /// Write a file to the filesystem
