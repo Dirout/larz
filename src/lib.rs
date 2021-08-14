@@ -1,4 +1,3 @@
-use stopwatch::Stopwatch;
 use anyhow::Context;
 use std::fs;
 use std::fs::File;
@@ -6,6 +5,7 @@ use std::io::BufWriter;
 use std::io::Write;
 use std::path::Path;
 use std::path::PathBuf;
+use stopwatch::Stopwatch;
 
 /// Archive a file or set of files
 ///
@@ -80,13 +80,14 @@ pub fn extract_archive(matches: &clap::ArgMatches) {
         let mut extracted_package = tar::Archive::new(decompressed_package_bytes);
         extracted_package
             .unpack(&output_path)
-            .expect("Could not extract archive");        
+            .expect("Could not extract archive");
     }
-    
+
     timer.stop();
     println!(
         "Extracted archive(s) to filesystem (path: {}) in {} seconds.",
-        output_path, (timer.elapsed_ms() as f32 / 1000.0)
+        output_path,
+        (timer.elapsed_ms() as f32 / 1000.0)
     );
 }
 
