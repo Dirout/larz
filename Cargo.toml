@@ -31,7 +31,7 @@ crate-type=["rlib", "dylib", "staticlib"]
 [[bin]]
 name = "larz"
 path = "src/main.rs"
-doc = false
+doc = true
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -59,3 +59,22 @@ strip = "symbols"
 [profile.release.build-override]
 opt-level = 3
 codegen-units = 1
+
+package.metadata.deb]
+section = "utility"
+priority = "optional"
+assets = [
+    ["target/x86_64-unknown-linux-gnu/release/larz", "usr/bin/", "755"],
+    ["target/x86_64-unknown-linux-gnu/release/liblarz.so", "usr/lib/", "644"],
+    ["README", "usr/share/doc/larz/README", "644"],
+    ["COPYING", "usr/share/doc/larz/COPYING", "644"],
+]
+
+[package.metadata.rpm]
+package = "larz"
+
+[package.metadata.rpm.cargo]
+buildflags = ["--release"]
+
+[package.metadata.rpm.targets]
+dokkoo = { path = "/usr/bin/larz" }

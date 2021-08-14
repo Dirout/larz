@@ -1,0 +1,37 @@
+#    This file is part of larz.
+#
+#    larz is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    larz is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with larz.  If not, see <https://www.gnu.org/licenses/>.
+name: larz
+title: larz
+version: git
+summary: Archive tool for efficient decompression 
+description: |
+  larz is an archive tool for efficient decompression.
+license: AGPL-3.0
+icon: branding/icon.png
+
+base: core20
+grade: stable
+confinement: strict
+
+parts:
+  larz:
+    plugin: rust
+    source: .
+
+apps:
+  larz:
+    command: bin/larz
+    plugs:
+          - home
