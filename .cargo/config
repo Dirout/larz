@@ -19,7 +19,7 @@ rustflags = ["-C", "target-cpu=native", "-Z", "tune-cpu=native", "-Z", "strip=sy
 rustflags = ["-C", "target-cpu=native", "-Z", "tune-cpu=native", "-Z", "strip=symbols", "-Z", "unstable-options"]
 
 [target.x86_64-pc-windows-gnu]
-rustflags = ["-C", "link-arg=-lpsapi", "-C", "target-cpu=native", "-Z", "tune-cpu=native", "-Z", "strip=symbols", "-Z", "unstable-options"]
+rustflags = ["-C", "link-arg=-lpsapi", "-C", "link-arg=-lbcrypt", "-C", "target-cpu=native", "-Z", "tune-cpu=native", "-Z", "strip=symbols", "-Z", "unstable-options"]
 
 [target.aarch64-unknown-linux-gnu]
 rustflags = ["-C", "target-cpu=native", "-Z", "tune-cpu=native", "-Z", "strip=symbols", "-Z", "unstable-options"]
