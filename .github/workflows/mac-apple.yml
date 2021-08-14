@@ -5,7 +5,7 @@ name: 'Build: macOS (ARM64)'
 jobs:
   mac_aarch64:
     name: macOS (ARM64)
-    runs-on: macos-11.0
+    runs-on: macos-11
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v2
