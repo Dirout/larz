@@ -33,17 +33,17 @@ pub fn compress_archive(matches: &clap::ArgMatches) {
     let output_file_name = output_pathbuf.file_stem().unwrap().to_str().unwrap();
 
     let mut tar = tar::Builder::new(Vec::new());
-    
+
     for fs_path in paths {
         let path_buf = PathBuf::from(fs_path);
-        match path_buf.is_dir()
-        {
+        match path_buf.is_dir() {
             true => {
                 tar.append_dir_all(".", fs_path)
-                .expect("Failed to write to archive");
+                    .expect("Failed to write to archive");
             }
             false => {
-                tar.append_path(fs_path).expect("Failed to write to archive");
+                tar.append_path(fs_path)
+                    .expect("Failed to write to archive");
             }
         }
     }
@@ -86,13 +86,12 @@ pub fn extract_archive(matches: &clap::ArgMatches) {
         extracted_package
             .unpack(&output_path)
             .expect("Could not extract archive");
-    
+
         let file_pathbuf = PathBuf::from(output_path);
         let file_name = file_pathbuf.file_stem().unwrap().to_str().unwrap();
         println!(
             "Extracted archive '{}' to filesystem (path: {})",
-            file_name,
-            output_path
+            file_name, output_path
         );
     }
 }
