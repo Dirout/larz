@@ -49,7 +49,7 @@ serde = "1.0.127"
 serde_yaml = "0.8.17"
 sha3 = "0.9.1"
 stopwatch = "0.0.7"
-tar = "0.4.36"
+tar = "0.4.37"
 
 [profile.release]
 codegen-units = 1
