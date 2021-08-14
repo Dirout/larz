@@ -1,6 +1,5 @@
 use stopwatch::Stopwatch;
 use anyhow::Context;
-use std::convert::TryInto;
 use std::fs;
 use std::fs::File;
 use std::io::BufWriter;
@@ -50,11 +49,9 @@ pub fn compress_archive(matches: &clap::ArgMatches) {
     write_file(&output_path, &compressed_archive_file);
     timer.stop();
 
-    let uncompressed_size_bytes: [u8; 4] = compressed_archive_file[0..4].try_into().unwrap();
-    let uncompressed_size: u32 = u32::from_le_bytes(uncompressed_size_bytes);
     println!(
-        "Wrote archive '{}' to filesystem (path: {}, uncompressed size: {} bytes) in {} seconds.",
-        output_file_name, output_path, uncompressed_size, (timer.elapsed_ms() as f32 / 1000.0)
+        "Wrote archive '{}' to filesystem (path: {}) in {} seconds.",
+        output_file_name, output_path, (timer.elapsed_ms() as f32 / 1000.0)
     );
 }
 
