@@ -60,7 +60,7 @@ strip = "symbols"
 opt-level = 3
 codegen-units = 1
 
-package.metadata.deb]
+[package.metadata.deb]
 section = "utility"
 priority = "optional"
 assets = [
@@ -77,4 +77,4 @@ package = "larz"
 buildflags = ["--release"]
 
 [package.metadata.rpm.targets]
-dokkoo = { path = "/usr/bin/larz" }
+larz = { path = "/usr/bin/larz" }
