@@ -1,4 +1,3 @@
-use stopwatch::Stopwatch;
 use anyhow::Context;
 use std::convert::TryInto;
 use std::fs;
@@ -7,6 +6,7 @@ use std::io::BufWriter;
 use std::io::Write;
 use std::path::Path;
 use std::path::PathBuf;
+use stopwatch::Stopwatch;
 
 /// Archive a file or set of files
 ///
@@ -54,7 +54,10 @@ pub fn compress_archive(matches: &clap::ArgMatches) {
     let uncompressed_size: u32 = u32::from_le_bytes(uncompressed_size_bytes);
     println!(
         "Wrote archive '{}' to filesystem (path: {}, uncompressed size: {} bytes) in {} seconds.",
-        output_file_name, output_path, uncompressed_size, (timer.elapsed_ms() as f32 / 1000.0)
+        output_file_name,
+        output_path,
+        uncompressed_size,
+        (timer.elapsed_ms() as f32 / 1000.0)
     );
 }
 
@@ -83,13 +86,14 @@ pub fn extract_archive(matches: &clap::ArgMatches) {
         let mut extracted_package = tar::Archive::new(decompressed_package_bytes);
         extracted_package
             .unpack(&output_path)
-            .expect("Could not extract archive");        
+            .expect("Could not extract archive");
     }
-    
+
     timer.stop();
     println!(
         "Extracted archive(s) to filesystem (path: {}) in {} seconds.",
-        output_path, (timer.elapsed_ms() as f32 / 1000.0)
+        output_path,
+        (timer.elapsed_ms() as f32 / 1000.0)
     );
 }
 
