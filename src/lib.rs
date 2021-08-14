@@ -51,7 +51,9 @@ pub fn compress_archive(matches: &clap::ArgMatches) {
 
     println!(
         "Wrote archive '{}' to filesystem (path: {}) in {} seconds.",
-        output_file_name, output_path, (timer.elapsed_ms() as f32 / 1000.0)
+        output_file_name,
+        output_path,
+        (timer.elapsed_ms() as f32 / 1000.0)
     );
 }
 
