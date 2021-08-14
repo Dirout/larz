@@ -67,42 +67,34 @@ pub fn compress_archive(matches: &clap::ArgMatches) {
 ///
 /// * `PATH` - Path to an archive (required)
 pub fn extract_archive(matches: &clap::ArgMatches) {
-    // let paths: Vec<&str> = matches
-    //     .values_of("PATH")
-    //     .with_context(|| "No path to a package source was given".to_string())
-    //     .unwrap()
-    //     .collect();
-    // let path_buf = PathBuf::from(path);
-    // let package_file_name = path_buf.file_stem().unwrap().to_str().unwrap();
-    // let package_parent_directory = path_buf.parent().unwrap().to_str().unwrap();
-    // env::set_current_dir(package_parent_directory)
-    //     .with_context(|| {
-    //         format!(
-    //             "Could not access parent directory of package file ({})",
-    //             package_parent_directory
-    //         )
-    //     })
-    //     .unwrap();
+    let paths: Vec<&str> = matches
+        .values_of("PATH")
+        .with_context(|| "No file paths were given".to_string())
+        .unwrap()
+        .collect();
+    let output_path = matches
+        .value_of("out")
+        .with_context(|| "No output path was given".to_string())
+        .unwrap();
 
-    // let package_file = File::open(path).expect("Could not open package file");
-    // let package_file_bytes = fs::read(path).expect("Could not read package file");
-    // let package_extract_path = format!(
-    //     "{}/{}-contents/",
-    //     package_parent_directory, package_file_name
-    // );
-
-    // let decompressed_package = lz4_flex::decompress_size_prepended(&package_file_bytes)
-    //     .expect("Could not decompress package file");
-    // let decompressed_package_bytes = &decompressed_package[..];
-    // let mut extracted_package = tar::Archive::new(decompressed_package_bytes);
-    // extracted_package
-    //     .unpack(&package_extract_path)
-    //     .expect("Could not unpack package");
-
-    // println!(
-    //     "Extracted package file '{}' to filesystem (path: {})",
-    //     package_file_name, package_extract_path
-    // );
+    for file_path in paths {
+        let compressed_file_bytes = fs::read(file_path).expect("Could not read archive file");
+        let decompressed_package = lz4_flex::decompress_size_prepended(&compressed_file_bytes)
+            .expect("Could not decompress archive file");
+        let decompressed_package_bytes = &decompressed_package[..];
+        let mut extracted_package = tar::Archive::new(decompressed_package_bytes);
+        extracted_package
+            .unpack(&output_path)
+            .expect("Could not extract archive");
+    
+        let file_pathbuf = PathBuf::from(output_path);
+        let file_name = file_pathbuf.file_stem().unwrap().to_str().unwrap();
+        println!(
+            "Extracted archive '{}' to filesystem (path: {})",
+            file_name,
+            output_path
+        );
+    }
 }
 
 /// Write a file to the filesystem

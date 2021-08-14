@@ -14,7 +14,7 @@ lazy_static! {
     static ref APP: clap::App<'static> = clap_app!(larz =>
         (version: crate_version!())
         (author: "Emil Sayahi")
-        (about: "larz is a performant package manager written in Rust.")
+        (about: "larz is an archive tool for efficient decompression.")
         (@subcommand show =>
             (about: "Shows information regarding the usage and handling of this software")
             (@arg warranty: -w --warranty "Prints warranty information")
@@ -23,12 +23,12 @@ lazy_static! {
         (@subcommand compress =>
             (about: "Archive a file or set of files")
             (@arg PATH: +required +takes_value +multiple "Path to a file or directory")
-            (@arg out: -o --out +required +takes_value "Specify an output path for the archive")
+            (@arg out: -o --out +required +takes_value "Specify an output file path for the archive")
         )
         (@subcommand extract =>
           (about: "Decompress an archive")
-          (@arg PATH: +required +takes_value +multiple "Path to an archive")
-          (@arg out: -o --out +required +takes_value "Specify an output path for the extracted contents")
+          (@arg PATH: +required +takes_value +multiple "Path to an archive file")
+          (@arg out: -o --out +required +takes_value "Specify an output directory path for the extracted contents")
       )
     );
 
