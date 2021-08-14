@@ -46,7 +46,7 @@ pub fn compress_archive(matches: &clap::ArgMatches) {
     tar.finish().expect("Unable to finish writing archive");
     let tar_bytes: &Vec<u8> = tar.get_ref();
     let compressed_archive_file = lz4_flex::compress_prepend_size(tar_bytes);
-    write_file(&output_path, &compressed_archive_file);
+    write_file(output_path, &compressed_archive_file);
     timer.stop();
 
     println!(
