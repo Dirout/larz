@@ -1,0 +1,41 @@
+on: [push]
+
+name: 'Build: GNU + Linux (x86_64)'
+
+jobs:
+  linux_x86-64:
+    name: GNU + Linux (x86_64)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v2
+      - name: Setup Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          target: x86_64-unknown-linux-gnu
+          default: true
+          profile: minimal
+      - name: Build larz
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --all-features --target x86_64-unknown-linux-gnu
+      - name: Prepare larz for upload
+        run: |
+          cd ./target/x86_64-unknown-linux-gnu/release/
+          strip -v --strip-all ./larz
+          strip -v --strip-all ./liblarz.so
+          strip -v --strip-all ./liblarz.a
+          chmod +x ./larz
+          tar -cvf x86_64-larz.gnu+linux.tar \
+          larz \
+          liblarz.so \
+          liblarz.a
+      - name: Upload larz build artifacts to GitHub
+        uses: actions/upload-artifact@v2
+        with:
+          name: x86_64-larz.gnu+linux
+          path: ./target/x86_64-unknown-linux-gnu/release/x86_64-larz.gnu+linux.tar
+          if-no-files-found: error
