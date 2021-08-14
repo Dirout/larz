@@ -45,7 +45,7 @@ lazy_static = "1.4.0"
 lz4_flex = { version = "0.8.2", default-features = false }
 mimalloc = { version = "0.1.26", default-features = false }
 semver = "1.0.3"
-serde = "1.0.126"
+serde = "1.0.127"
 serde_yaml = "0.8.17"
 sha3 = "0.9.1"
 stopwatch = "0.0.7"
