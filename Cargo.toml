@@ -18,6 +18,7 @@ name = "larz"
 version = "0.1.0"
 authors = ["Emil Sayahi <limesayahi@gmail.com>"]
 edition = "2018"
+resolver = "2"
 license = "AGPL-3.0-or-later"
 description = "Archive tool for efficient decompression."
 repository = "https://github.com/Dirout/larz"
