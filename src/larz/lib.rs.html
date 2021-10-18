@@ -145,11 +145,11 @@
     <span class="kw">for</span> <span class="ident">fs_path</span> <span class="kw">in</span> <span class="ident">paths</span> {
         <span class="kw">let</span> <span class="ident">path_buf</span> <span class="op">=</span> <span class="ident">PathBuf::from</span>(<span class="ident">fs_path</span>);
         <span class="kw">match</span> <span class="ident">path_buf</span>.<span class="ident">is_dir</span>() {
-            <span class="bool-val">true</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="bool-val">true</span> =&gt; {
                 <span class="ident">tar</span>.<span class="ident">append_dir_all</span>(<span class="string">&quot;.&quot;</span>, <span class="ident">fs_path</span>)
                     .<span class="ident">expect</span>(<span class="string">&quot;Failed to write to archive&quot;</span>);
             }
-            <span class="bool-val">false</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="bool-val">false</span> =&gt; {
                 <span class="ident">tar</span>.<span class="ident">append_path</span>(<span class="ident">fs_path</span>)
                     .<span class="ident">expect</span>(<span class="string">&quot;Failed to write to archive&quot;</span>);
             }
