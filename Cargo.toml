@@ -42,7 +42,7 @@ anyhow = "1.0.43"
 clap = { version = "3.0.0-beta.2", features = ["suggestions", "color", "wrap_help"] }
 lazy_static = "1.4.0"
 lz4_flex = { version = "0.8.2", default-features = false }
-mimalloc = { version = "0.1.26", default-features = false }
+mimalloc = { version = "0.1.27", default-features = false }
 stopwatch = "0.0.7"
 tar = "0.4.37"
 
