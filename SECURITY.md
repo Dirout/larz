@@ -37,7 +37,7 @@ The first step is to find out the root cause, nature and scope of the incident.
 After the initial assessment and containment to my best abilities, I will
 document all actions taken in a response plan.
 
-I will create a comment in [the official "Updates" issue](https://github.com/Dirout/larz/issues/3) to inform users about
+I will create a comment in [the official "Updates" issue](https://github.com/Dirout/larz/issues/19) to inform users about
 the incident and what I actions I took to contain it.
 
 ### 3. Remediation
