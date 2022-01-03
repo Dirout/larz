@@ -44,7 +44,7 @@ lazy_static = "1.4.0"
 lz4_flex = { version = "0.8.2", default-features = false }
 mimalloc = { version = "0.1.27", default-features = false }
 stopwatch = "0.0.7"
-tar = "0.4.37"
+tar = "0.4.38"
 
 [profile.release]
 codegen-units = 1
