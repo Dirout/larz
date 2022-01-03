@@ -128,48 +128,48 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// * `PATH` - Path to a file or directory (required)</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">compress_archive</span>(<span class="ident">matches</span>: <span class="kw-2">&amp;</span><span class="ident">clap::ArgMatches</span>) {
-	<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">timer</span> <span class="op">=</span> <span class="ident">Stopwatch::start_new</span>();
-	<span class="kw">let</span> <span class="ident">paths</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">matches</span>
-		.<span class="ident">values_of</span>(<span class="string">&quot;PATH&quot;</span>)
-		.<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="string">&quot;No file paths were given&quot;</span>.<span class="ident">to_string</span>())
-		.<span class="ident">unwrap</span>()
-		.<span class="ident">collect</span>();
-	<span class="kw">let</span> <span class="ident">output_path</span> <span class="op">=</span> <span class="ident">matches</span>
-		.<span class="ident">value_of</span>(<span class="string">&quot;out&quot;</span>)
-		.<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="string">&quot;No output path was given&quot;</span>.<span class="ident">to_string</span>())
-		.<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">timer</span> <span class="op">=</span> <span class="ident">Stopwatch::start_new</span>();
+    <span class="kw">let</span> <span class="ident">paths</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">matches</span>
+        .<span class="ident">values_of</span>(<span class="string">&quot;PATH&quot;</span>)
+        .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="string">&quot;No file paths were given&quot;</span>.<span class="ident">to_string</span>())
+        .<span class="ident">unwrap</span>()
+        .<span class="ident">collect</span>();
+    <span class="kw">let</span> <span class="ident">output_path</span> <span class="op">=</span> <span class="ident">matches</span>
+        .<span class="ident">value_of</span>(<span class="string">&quot;out&quot;</span>)
+        .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="string">&quot;No output path was given&quot;</span>.<span class="ident">to_string</span>())
+        .<span class="ident">unwrap</span>();
 
-	<span class="kw">let</span> <span class="ident">output_pathbuf</span> <span class="op">=</span> <span class="ident">PathBuf::from</span>(<span class="ident">output_path</span>);
-	<span class="kw">let</span> <span class="ident">output_file_name</span> <span class="op">=</span> <span class="ident">output_pathbuf</span>.<span class="ident">file_stem</span>().<span class="ident">unwrap</span>().<span class="ident">to_str</span>().<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="ident">output_pathbuf</span> <span class="op">=</span> <span class="ident">PathBuf::from</span>(<span class="ident">output_path</span>);
+    <span class="kw">let</span> <span class="ident">output_file_name</span> <span class="op">=</span> <span class="ident">output_pathbuf</span>.<span class="ident">file_stem</span>().<span class="ident">unwrap</span>().<span class="ident">to_str</span>().<span class="ident">unwrap</span>();
 
-	<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tar</span> <span class="op">=</span> <span class="ident">tar::Builder::new</span>(<span class="ident">Vec::new</span>());
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tar</span> <span class="op">=</span> <span class="ident">tar::Builder::new</span>(<span class="ident">Vec::new</span>());
 
-	<span class="kw">for</span> <span class="ident">fs_path</span> <span class="kw">in</span> <span class="ident">paths</span> {
-		<span class="kw">let</span> <span class="ident">path_buf</span> <span class="op">=</span> <span class="ident">PathBuf::from</span>(<span class="ident">fs_path</span>);
-		<span class="kw">match</span> <span class="ident">path_buf</span>.<span class="ident">is_dir</span>() {
-			<span class="bool-val">true</span> =&gt; {
-				<span class="ident">tar</span>.<span class="ident">append_dir_all</span>(<span class="string">&quot;.&quot;</span>, <span class="ident">fs_path</span>)
-					.<span class="ident">expect</span>(<span class="string">&quot;Failed to write to archive&quot;</span>);
-			}
-			<span class="bool-val">false</span> =&gt; {
-				<span class="ident">tar</span>.<span class="ident">append_path</span>(<span class="ident">fs_path</span>)
-					.<span class="ident">expect</span>(<span class="string">&quot;Failed to write to archive&quot;</span>);
-			}
-		}
-	}
+    <span class="kw">for</span> <span class="ident">fs_path</span> <span class="kw">in</span> <span class="ident">paths</span> {
+        <span class="kw">let</span> <span class="ident">path_buf</span> <span class="op">=</span> <span class="ident">PathBuf::from</span>(<span class="ident">fs_path</span>);
+        <span class="kw">match</span> <span class="ident">path_buf</span>.<span class="ident">is_dir</span>() {
+            <span class="bool-val">true</span> =&gt; {
+                <span class="ident">tar</span>.<span class="ident">append_dir_all</span>(<span class="string">&quot;.&quot;</span>, <span class="ident">fs_path</span>)
+                    .<span class="ident">expect</span>(<span class="string">&quot;Failed to write to archive&quot;</span>);
+            }
+            <span class="bool-val">false</span> =&gt; {
+                <span class="ident">tar</span>.<span class="ident">append_path</span>(<span class="ident">fs_path</span>)
+                    .<span class="ident">expect</span>(<span class="string">&quot;Failed to write to archive&quot;</span>);
+            }
+        }
+    }
 
-	<span class="ident">tar</span>.<span class="ident">finish</span>().<span class="ident">expect</span>(<span class="string">&quot;Unable to finish writing archive&quot;</span>);
-	<span class="kw">let</span> <span class="ident">tar_bytes</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">tar</span>.<span class="ident">get_ref</span>();
-	<span class="kw">let</span> <span class="ident">compressed_archive_file</span> <span class="op">=</span> <span class="ident">lz4_flex::compress_prepend_size</span>(<span class="ident">tar_bytes</span>);
-	<span class="ident">write_file</span>(<span class="ident">output_path</span>, <span class="kw-2">&amp;</span><span class="ident">compressed_archive_file</span>);
-	<span class="ident">timer</span>.<span class="ident">stop</span>();
+    <span class="ident">tar</span>.<span class="ident">finish</span>().<span class="ident">expect</span>(<span class="string">&quot;Unable to finish writing archive&quot;</span>);
+    <span class="kw">let</span> <span class="ident">tar_bytes</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">tar</span>.<span class="ident">get_ref</span>();
+    <span class="kw">let</span> <span class="ident">compressed_archive_file</span> <span class="op">=</span> <span class="ident">lz4_flex::compress_prepend_size</span>(<span class="ident">tar_bytes</span>);
+    <span class="ident">write_file</span>(<span class="ident">output_path</span>, <span class="kw-2">&amp;</span><span class="ident">compressed_archive_file</span>);
+    <span class="ident">timer</span>.<span class="ident">stop</span>();
 
-	<span class="macro">println!</span>(
-		<span class="string">&quot;Wrote archive &#39;{}&#39; to filesystem (path: {}) in {} seconds.&quot;</span>,
-		<span class="ident">output_file_name</span>,
-		<span class="ident">output_path</span>,
-		(<span class="ident">timer</span>.<span class="ident">elapsed_ms</span>() <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="number">1000.0</span>)
-	);
+    <span class="macro">println!</span>(
+        <span class="string">&quot;Wrote archive &#39;{}&#39; to filesystem (path: {}) in {} seconds.&quot;</span>,
+        <span class="ident">output_file_name</span>,
+        <span class="ident">output_path</span>,
+        (<span class="ident">timer</span>.<span class="ident">elapsed_ms</span>() <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="number">1000.0</span>)
+    );
 }
 
 <span class="doccomment">/// Decompress an archive</span>
@@ -178,34 +178,34 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// * `PATH` - Path to an archive (required)</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extract_archive</span>(<span class="ident">matches</span>: <span class="kw-2">&amp;</span><span class="ident">clap::ArgMatches</span>) {
-	<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">timer</span> <span class="op">=</span> <span class="ident">Stopwatch::start_new</span>();
-	<span class="kw">let</span> <span class="ident">paths</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">matches</span>
-		.<span class="ident">values_of</span>(<span class="string">&quot;PATH&quot;</span>)
-		.<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="string">&quot;No file paths were given&quot;</span>.<span class="ident">to_string</span>())
-		.<span class="ident">unwrap</span>()
-		.<span class="ident">collect</span>();
-	<span class="kw">let</span> <span class="ident">output_path</span> <span class="op">=</span> <span class="ident">matches</span>
-		.<span class="ident">value_of</span>(<span class="string">&quot;out&quot;</span>)
-		.<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="string">&quot;No output path was given&quot;</span>.<span class="ident">to_string</span>())
-		.<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">timer</span> <span class="op">=</span> <span class="ident">Stopwatch::start_new</span>();
+    <span class="kw">let</span> <span class="ident">paths</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">matches</span>
+        .<span class="ident">values_of</span>(<span class="string">&quot;PATH&quot;</span>)
+        .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="string">&quot;No file paths were given&quot;</span>.<span class="ident">to_string</span>())
+        .<span class="ident">unwrap</span>()
+        .<span class="ident">collect</span>();
+    <span class="kw">let</span> <span class="ident">output_path</span> <span class="op">=</span> <span class="ident">matches</span>
+        .<span class="ident">value_of</span>(<span class="string">&quot;out&quot;</span>)
+        .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="string">&quot;No output path was given&quot;</span>.<span class="ident">to_string</span>())
+        .<span class="ident">unwrap</span>();
 
-	<span class="kw">for</span> <span class="ident">file_path</span> <span class="kw">in</span> <span class="ident">paths</span> {
-		<span class="kw">let</span> <span class="ident">compressed_file_bytes</span> <span class="op">=</span> <span class="ident">fs::read</span>(<span class="ident">file_path</span>).<span class="ident">expect</span>(<span class="string">&quot;Could not read archive file&quot;</span>);
-		<span class="kw">let</span> <span class="ident">decompressed_package</span> <span class="op">=</span> <span class="ident">lz4_flex::decompress_size_prepended</span>(<span class="kw-2">&amp;</span><span class="ident">compressed_file_bytes</span>)
-			.<span class="ident">expect</span>(<span class="string">&quot;Could not decompress archive file&quot;</span>);
-		<span class="kw">let</span> <span class="ident">decompressed_package_bytes</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">decompressed_package</span>[..];
-		<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">extracted_package</span> <span class="op">=</span> <span class="ident">tar::Archive::new</span>(<span class="ident">decompressed_package_bytes</span>);
-		<span class="ident">extracted_package</span>
-			.<span class="ident">unpack</span>(<span class="kw-2">&amp;</span><span class="ident">output_path</span>)
-			.<span class="ident">expect</span>(<span class="string">&quot;Could not extract archive&quot;</span>);
-	}
+    <span class="kw">for</span> <span class="ident">file_path</span> <span class="kw">in</span> <span class="ident">paths</span> {
+        <span class="kw">let</span> <span class="ident">compressed_file_bytes</span> <span class="op">=</span> <span class="ident">fs::read</span>(<span class="ident">file_path</span>).<span class="ident">expect</span>(<span class="string">&quot;Could not read archive file&quot;</span>);
+        <span class="kw">let</span> <span class="ident">decompressed_package</span> <span class="op">=</span> <span class="ident">lz4_flex::decompress_size_prepended</span>(<span class="kw-2">&amp;</span><span class="ident">compressed_file_bytes</span>)
+            .<span class="ident">expect</span>(<span class="string">&quot;Could not decompress archive file&quot;</span>);
+        <span class="kw">let</span> <span class="ident">decompressed_package_bytes</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">decompressed_package</span>[..];
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">extracted_package</span> <span class="op">=</span> <span class="ident">tar::Archive::new</span>(<span class="ident">decompressed_package_bytes</span>);
+        <span class="ident">extracted_package</span>
+            .<span class="ident">unpack</span>(<span class="kw-2">&amp;</span><span class="ident">output_path</span>)
+            .<span class="ident">expect</span>(<span class="string">&quot;Could not extract archive&quot;</span>);
+    }
 
-	<span class="ident">timer</span>.<span class="ident">stop</span>();
-	<span class="macro">println!</span>(
-		<span class="string">&quot;Extracted archive(s) to filesystem (path: {}) in {} seconds.&quot;</span>,
-		<span class="ident">output_path</span>,
-		(<span class="ident">timer</span>.<span class="ident">elapsed_ms</span>() <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="number">1000.0</span>)
-	);
+    <span class="ident">timer</span>.<span class="ident">stop</span>();
+    <span class="macro">println!</span>(
+        <span class="string">&quot;Extracted archive(s) to filesystem (path: {}) in {} seconds.&quot;</span>,
+        <span class="ident">output_path</span>,
+        (<span class="ident">timer</span>.<span class="ident">elapsed_ms</span>() <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="number">1000.0</span>)
+    );
 }
 
 <span class="doccomment">/// Write a file to the filesystem</span>
@@ -217,14 +217,14 @@
 <span class="doccomment">/// * `data_to_write` - The data to write to the filesystem</span>
 <span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_file</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">data_to_write</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) {
-	<span class="ident">fs::create_dir_all</span>(<span class="ident">Path::new</span>(<span class="ident">path</span>).<span class="ident">parent</span>().<span class="ident">unwrap</span>()).<span class="ident">unwrap</span>(); <span class="comment">// Create output path, write to file</span>
-	<span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="kw-2">&amp;</span><span class="ident">path</span>).<span class="ident">unwrap</span>(); <span class="comment">// Create file which we will write to</span>
-	<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffered_writer</span> <span class="op">=</span> <span class="ident">BufWriter::new</span>(<span class="ident">file</span>); <span class="comment">// Create a buffered writer, allowing us to modify the file we&#39;ve just created</span>
-	<span class="ident">buffered_writer</span>
-		.<span class="ident">write_all</span>(<span class="ident">data_to_write</span>)
-		.<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Could not write data to {}&quot;</span>, <span class="ident">path</span>))
-		.<span class="ident">unwrap</span>(); <span class="comment">// Write data to file</span>
-	<span class="ident">buffered_writer</span>.<span class="ident">flush</span>().<span class="ident">unwrap</span>(); <span class="comment">// Empty out the data from memory after we&#39;ve written to the file</span>
+    <span class="ident">fs::create_dir_all</span>(<span class="ident">Path::new</span>(<span class="ident">path</span>).<span class="ident">parent</span>().<span class="ident">unwrap</span>()).<span class="ident">unwrap</span>(); <span class="comment">// Create output path, write to file</span>
+    <span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="kw-2">&amp;</span><span class="ident">path</span>).<span class="ident">unwrap</span>(); <span class="comment">// Create file which we will write to</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffered_writer</span> <span class="op">=</span> <span class="ident">BufWriter::new</span>(<span class="ident">file</span>); <span class="comment">// Create a buffered writer, allowing us to modify the file we&#39;ve just created</span>
+    <span class="ident">buffered_writer</span>
+        .<span class="ident">write_all</span>(<span class="ident">data_to_write</span>)
+        .<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Could not write data to {}&quot;</span>, <span class="ident">path</span>))
+        .<span class="ident">unwrap</span>(); <span class="comment">// Write data to file</span>
+    <span class="ident">buffered_writer</span>.<span class="ident">flush</span>().<span class="ident">unwrap</span>(); <span class="comment">// Empty out the data from memory after we&#39;ve written to the file</span>
 }
 </code></pre></div>
 </section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="larz" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.59.0-nightly (8f3238f89 2022-01-02)" ></div>
