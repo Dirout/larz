@@ -17,7 +17,7 @@ cargo-features = ["strip"]
 name = "larz"
 version = "0.1.0"
 authors = ["Emil Sayahi <limesayahi@gmail.com>"]
-edition = "2018"
+edition = "2021"
 resolver = "2"
 license = "AGPL-3.0-or-later"
 description = "Archive tool for efficient decompression."
@@ -39,7 +39,7 @@ doc = true
 
 [dependencies]
 anyhow = "1.0.52"
-clap = { version = "3.0.0", features = ["suggestions", "color", "wrap_help"] }
+clap = { version = "3.0.0", features = ["cargo", "suggestions", "color", "wrap_help", "unicode"] }
 lazy_static = "1.4.0"
 lz4_flex = { version = "0.9.2", default-features = false }
 mimalloc = { version = "0.1.27", default-features = false }
