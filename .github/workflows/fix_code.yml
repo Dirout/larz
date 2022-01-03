@@ -17,15 +17,11 @@ jobs:
           toolchain: nightly
           profile: minimal
           components: clippy, rustfmt
-      - name: Install 'cargo-fix'
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: cargo-fix
       - name: Revise code files
         uses: actions-rs/cargo@v1
         with:
           command: fix
+          args: --edition --edition-idioms
       - name: Commit changes to code, if any
         run: |
           git config --global user.name 'larz'

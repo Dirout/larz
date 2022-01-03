@@ -1,7 +1,7 @@
 #![feature(panic_info_message)]
 mod lib;
 
-use clap::{clap_app, crate_version, ArgMatches};
+use clap::{arg, crate_version, App, ArgMatches};
 use lazy_static::lazy_static;
 use mimalloc::MiMalloc;
 
@@ -10,67 +10,48 @@ use mimalloc::MiMalloc;
 static GLOBAL: MiMalloc = MiMalloc;
 
 lazy_static! {
-    /// The command-line interface (CLI) of larz
-    static ref APP: clap::App<'static> = clap_app!(larz =>
-        (version: crate_version!())
-        (author: "Emil Sayahi")
-        (about: "larz is an archive tool for efficient decompression.")
-        (@subcommand show =>
-            (about: "Shows information regarding the usage and handling of this software")
-            (@arg warranty: -w --warranty "Prints warranty information")
-            (@arg conditions: -c --conditions "Prints conditions information")
-        )
-        (@subcommand compress =>
-            (about: "Archive a file or set of files")
-            (@arg PATH: +required +takes_value +multiple "Path to a file or directory")
-            (@arg out: -o --out +required +takes_value "Specify an output file path for the archive")
-        )
-        (@subcommand extract =>
-          (about: "Decompress an archive")
-          (@arg PATH: +required +takes_value +multiple "Path to an archive file")
-          (@arg out: -o --out +required +takes_value "Specify an output directory path for the extracted contents")
-      )
-    );
+	/// The command-line interface (CLI) of larz
+	static ref APP: clap::App<'static> = App::new("larz").version(crate_version!()).author("Emil Sayahi").about("larz is an archive tool for efficient decompression.").subcommand(App::new("show").about("Shows information regarding the usage and handling of this software").arg(arg!(-w --warranty "Prints warranty information")).arg(arg!(-c --conditions "Prints conditions information"))).subcommand(App::new("compress").about("Archive a file or set of files").arg(arg!(<PATH> "Path to a file or directory").required(true).takes_value(true).multiple_values(true)).arg(arg!(-o --out "Specify an output file path for the archive").required(true).takes_value(true))).subcommand(App::new("extract").about("Decompress an archive").arg(arg!(<PATH> "Path to an archive file").required(true).takes_value(true).multiple_values(true)).arg(arg!(-o --out "Specify an output directory path for the extracted contents").required(true).takes_value(true)));
 
-    /// The arguments passed to the larz CLI
-    static ref MATCHES: ArgMatches = APP.clone().get_matches();
+	/// The arguments passed to the larz CLI
+	static ref MATCHES: ArgMatches = APP.clone().get_matches();
 }
 
 /// The main function of larz's CLI
 fn main() {
-    std::panic::set_hook(Box::new(|e| {
-        println!(
-            "{}\nDefined in: {}:{}:{}",
-            format!("{}", e.message().unwrap())
-                .replace("called `Result::unwrap()` on an `Err` value", "Error"),
-            e.location().unwrap().file(),
-            e.location().unwrap().line(),
-            e.location().unwrap().column()
-        );
-    }));
+	std::panic::set_hook(Box::new(|e| {
+		println!(
+			"{}\nDefined in: {}:{}:{}",
+			format!("{}", e.message().unwrap())
+				.replace("called `Result::unwrap()` on an `Err` value", "Error"),
+			e.location().unwrap().file(),
+			e.location().unwrap().line(),
+			e.location().unwrap().column()
+		);
+	}));
 
-    println!(
-        "
+	println!(
+		"
     larz  Copyright (C) 2021  Emil Sayahi
     This program comes with ABSOLUTELY NO WARRANTY; for details type `larz show -w'.
     This is free software, and you are welcome to redistribute it
     under certain conditions; type `larz show -c' for details.
     "
-    );
+	);
 
-    match MATCHES.subcommand() {
-        Some(("show", show_matches)) => {
-            show(show_matches);
-        }
-        Some(("compress", package_matches)) => {
-            lib::compress_archive(package_matches);
-        }
-        Some(("extract", package_matches)) => {
-            lib::extract_archive(package_matches);
-        }
-        None => println!("{}", APP.get_about().unwrap()),
-        _ => unreachable!(), // If all subcommands are defined above, anything else is unreachable!()
-    }
+	match MATCHES.subcommand() {
+		Some(("show", show_matches)) => {
+			show(show_matches);
+		}
+		Some(("compress", package_matches)) => {
+			lib::compress_archive(package_matches);
+		}
+		Some(("extract", package_matches)) => {
+			lib::extract_archive(package_matches);
+		}
+		None => println!("{}", APP.get_about().unwrap()),
+		_ => unreachable!(), // If all subcommands are defined above, anything else is unreachable!()
+	}
 }
 
 /// Shows information regarding the usage and handling of this software
@@ -81,10 +62,10 @@ fn main() {
 ///
 /// * `conditions` - Prints conditions information
 fn show(matches: &clap::ArgMatches) {
-    if matches.is_present("warranty") {
-        // "larz show -w" was run
-        println!(
-            "
+	if matches.is_present("warranty") {
+		// "larz show -w" was run
+		println!(
+			"
     15. Disclaimer of Warranty.
     THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
   APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
@@ -116,11 +97,11 @@ fn show(matches: &clap::ArgMatches) {
   Program, unless a warranty or assumption of liability accompanies a
   copy of the Program in return for a fee.
   "
-        );
-    } else if matches.is_present("conditions") {
-        // "larz show -c" was run
-        println!(
-            "
+		);
+	} else if matches.is_present("conditions") {
+		// "larz show -c" was run
+		println!(
+			"
         TERMS AND CONDITIONS
         0. Definitions.
       
@@ -682,6 +663,6 @@ fn show(matches: &clap::ArgMatches) {
       
                           END OF TERMS AND CONDITIONS
       "
-        );
-    }
+		);
+	}
 }
