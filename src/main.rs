@@ -1,3 +1,16 @@
+/*
+	This file is part of larz.
+	larz is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	larz is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+	You should have received a copy of the GNU Affero General Public License
+	along with larz.  If not, see <https://www.gnu.org/licenses/>.
+*/
 #![feature(panic_info_message)]
 mod lib;
 
@@ -32,7 +45,7 @@ fn main() {
 
 	println!(
 		"
-    larz  Copyright (C) 2021  Emil Sayahi
+    larz  Copyright (C) 2021, 2022  Emil Sayahi
     This program comes with ABSOLUTELY NO WARRANTY; for details type `larz show -w'.
     This is free software, and you are welcome to redistribute it
     under certain conditions; type `larz show -c' for details.
