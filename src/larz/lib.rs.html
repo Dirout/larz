@@ -102,31 +102,6 @@
 <span id="99"> 99</span>
 <span id="100">100</span>
 <span id="101">101</span>
-<span id="102">102</span>
-<span id="103">103</span>
-<span id="104">104</span>
-<span id="105">105</span>
-<span id="106">106</span>
-<span id="107">107</span>
-<span id="108">108</span>
-<span id="109">109</span>
-<span id="110">110</span>
-<span id="111">111</span>
-<span id="112">112</span>
-<span id="113">113</span>
-<span id="114">114</span>
-<span id="115">115</span>
-<span id="116">116</span>
-<span id="117">117</span>
-<span id="118">118</span>
-<span id="119">119</span>
-<span id="120">120</span>
-<span id="121">121</span>
-<span id="122">122</span>
-<span id="123">123</span>
-<span id="124">124</span>
-<span id="125">125</span>
-<span id="126">126</span>
 </pre><pre class="rust"><code><span class="comment">/*
 	This file is part of larz.
 	larz is free software: you can redistribute it and/or modify
@@ -141,11 +116,7 @@
 	along with larz.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
 */</span>
 <span class="kw">use</span> <span class="ident">anyhow::Context</span>;
-<span class="kw">use</span> <span class="ident">std::fs</span>;
 <span class="kw">use</span> <span class="ident">std::fs::File</span>;
-<span class="kw">use</span> <span class="ident">std::io::BufWriter</span>;
-<span class="kw">use</span> <span class="ident">std::io::Write</span>;
-<span class="kw">use</span> <span class="ident">std::path::Path</span>;
 <span class="kw">use</span> <span class="ident">std::path::PathBuf</span>;
 <span class="kw">use</span> <span class="ident">stopwatch::Stopwatch</span>;
 
@@ -169,7 +140,9 @@
 	<span class="kw">let</span> <span class="ident">output_pathbuf</span> <span class="op">=</span> <span class="ident">PathBuf::from</span>(<span class="ident">output_path</span>);
 	<span class="kw">let</span> <span class="ident">output_file_name</span> <span class="op">=</span> <span class="ident">output_pathbuf</span>.<span class="ident">file_stem</span>().<span class="ident">unwrap</span>().<span class="ident">to_str</span>().<span class="ident">unwrap</span>();
 
-	<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tar</span> <span class="op">=</span> <span class="ident">tar::Builder::new</span>(<span class="ident">Vec::new</span>());
+	<span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="ident">output_path</span>).<span class="ident">expect</span>(<span class="string">&quot;Unable to create file&quot;</span>);
+	<span class="kw">let</span> <span class="ident">compressor</span> <span class="op">=</span> <span class="ident">lz4_flex::frame::FrameEncoder::new</span>(<span class="ident">f</span>);
+	<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tar</span> <span class="op">=</span> <span class="ident">tar::Builder::new</span>(<span class="ident">compressor</span>);
 
 	<span class="kw">for</span> <span class="ident">fs_path</span> <span class="kw">in</span> <span class="ident">paths</span> {
 		<span class="kw">let</span> <span class="ident">path_buf</span> <span class="op">=</span> <span class="ident">PathBuf::from</span>(<span class="ident">fs_path</span>);
@@ -185,10 +158,10 @@
 		}
 	}
 
-	<span class="ident">tar</span>.<span class="ident">finish</span>().<span class="ident">expect</span>(<span class="string">&quot;Unable to finish writing archive&quot;</span>);
-	<span class="kw">let</span> <span class="ident">tar_bytes</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">tar</span>.<span class="ident">get_ref</span>();
-	<span class="kw">let</span> <span class="ident">compressed_archive_file</span> <span class="op">=</span> <span class="ident">lz4_flex::compress_prepend_size</span>(<span class="ident">tar_bytes</span>);
-	<span class="ident">write_file</span>(<span class="ident">output_path</span>, <span class="kw-2">&amp;</span><span class="ident">compressed_archive_file</span>);
+	<span class="kw">let</span> <span class="ident">tar_compressor</span> <span class="op">=</span> <span class="ident">tar</span>.<span class="ident">into_inner</span>().<span class="ident">expect</span>(<span class="string">&quot;Unable to finish writing archive&quot;</span>);
+	<span class="ident">tar_compressor</span>
+		.<span class="ident">finish</span>()
+		.<span class="ident">expect</span>(<span class="string">&quot;Unable to finish with compression&quot;</span>);
 	<span class="ident">timer</span>.<span class="ident">stop</span>();
 
 	<span class="macro">println!</span>(
@@ -217,14 +190,10 @@
 		.<span class="ident">unwrap</span>();
 
 	<span class="kw">for</span> <span class="ident">file_path</span> <span class="kw">in</span> <span class="ident">paths</span> {
-		<span class="kw">let</span> <span class="ident">compressed_file_bytes</span> <span class="op">=</span> <span class="ident">fs::read</span>(<span class="ident">file_path</span>).<span class="ident">expect</span>(<span class="string">&quot;Could not read archive file&quot;</span>);
-		<span class="kw">let</span> <span class="ident">decompressed_package</span> <span class="op">=</span> <span class="ident">lz4_flex::decompress_size_prepended</span>(<span class="kw-2">&amp;</span><span class="ident">compressed_file_bytes</span>)
-			.<span class="ident">expect</span>(<span class="string">&quot;Could not decompress archive file&quot;</span>);
-		<span class="kw">let</span> <span class="ident">decompressed_package_bytes</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">decompressed_package</span>[..];
-		<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">extracted_package</span> <span class="op">=</span> <span class="ident">tar::Archive::new</span>(<span class="ident">decompressed_package_bytes</span>);
-		<span class="ident">extracted_package</span>
-			.<span class="ident">unpack</span>(<span class="kw-2">&amp;</span><span class="ident">output_path</span>)
-			.<span class="ident">expect</span>(<span class="string">&quot;Could not extract archive&quot;</span>);
+		<span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="ident">std::fs::File::open</span>(<span class="ident">file_path</span>).<span class="ident">expect</span>(<span class="string">&quot;Could not read archive file&quot;</span>);
+		<span class="kw">let</span> <span class="ident">extractor</span> <span class="op">=</span> <span class="ident">lz4_flex::frame::FrameDecoder::new</span>(<span class="ident">f</span>);
+		<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tar</span> <span class="op">=</span> <span class="ident">tar::Archive::new</span>(<span class="ident">extractor</span>);
+		<span class="ident">tar</span>.<span class="ident">unpack</span>(<span class="kw-2">&amp;</span><span class="ident">output_path</span>).<span class="ident">expect</span>(<span class="string">&quot;Could not extract archive&quot;</span>);
 	}
 
 	<span class="ident">timer</span>.<span class="ident">stop</span>();
@@ -233,25 +202,6 @@
 		<span class="ident">output_path</span>,
 		(<span class="ident">timer</span>.<span class="ident">elapsed_ms</span>() <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="number">1000.0</span>)
 	);
-}
-
-<span class="doccomment">/// Write a file to the filesystem</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Arguments</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// * `path` - The path to write the file to</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// * `data_to_write` - The data to write to the filesystem</span>
-<span class="attribute">#[<span class="ident">inline</span>(<span class="ident">always</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_file</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">data_to_write</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) {
-	<span class="ident">fs::create_dir_all</span>(<span class="ident">Path::new</span>(<span class="ident">path</span>).<span class="ident">parent</span>().<span class="ident">unwrap</span>()).<span class="ident">unwrap</span>(); <span class="comment">// Create output path, write to file</span>
-	<span class="kw">let</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">File::create</span>(<span class="kw-2">&amp;</span><span class="ident">path</span>).<span class="ident">unwrap</span>(); <span class="comment">// Create file which we will write to</span>
-	<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffered_writer</span> <span class="op">=</span> <span class="ident">BufWriter::new</span>(<span class="ident">file</span>); <span class="comment">// Create a buffered writer, allowing us to modify the file we&#39;ve just created</span>
-	<span class="ident">buffered_writer</span>
-		.<span class="ident">write_all</span>(<span class="ident">data_to_write</span>)
-		.<span class="ident">with_context</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Could not write data to {}&quot;</span>, <span class="ident">path</span>))
-		.<span class="ident">unwrap</span>(); <span class="comment">// Write data to file</span>
-	<span class="ident">buffered_writer</span>.<span class="ident">flush</span>().<span class="ident">unwrap</span>(); <span class="comment">// Empty out the data from memory after we&#39;ve written to the file</span>
 }
 </code></pre></div>
 </section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="larz" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.60.0-nightly (ad46af247 2022-01-14)" ></div>
