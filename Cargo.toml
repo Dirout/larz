@@ -39,7 +39,7 @@ doc = true
 
 [dependencies]
 anyhow = "1.0.52"
-clap = { version = "3.0.1", features = ["cargo", "suggestions", "color", "wrap_help", "unicode"] }
+clap = { version = "3.0.7", features = ["cargo", "suggestions", "color", "wrap_help", "unicode"] }
 lazy_static = "1.4.0"
 lz4_flex = { version = "0.9.2", default-features = false }
 mimalloc = { version = "0.1.27", default-features = false }
