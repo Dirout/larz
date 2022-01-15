@@ -20,7 +20,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: login
-          args:  ${{ secrets.CRATES_LOGIN }}
+          args:  ${{ secrets.NEW_CRATES_LOGIN }}
       - name: Package larz
         uses: actions-rs/cargo@v1
         with:
