@@ -1,0 +1,31 @@
+on: [push]
+
+name: 'Assign: crates.io'
+
+jobs:
+  publish:
+    name: 'Assign: crates.io'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v2
+      - name: Setup Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          profile: minimal
+      - name: Login to crates.io
+        uses: actions-rs/cargo@v1
+        with:
+          command: login
+          args:  ${{ secrets.CRATES_LOGIN }}
+      - name: Assign larz
+        uses: actions-rs/cargo@v1
+        with:
+          command: owner
+          args: --add emmyoh larz
+      - name: Assign Dokkoo
+        uses: actions-rs/cargo@v1
+        with:
+          command: owner
+          args: --add emmyoh dokkoo
