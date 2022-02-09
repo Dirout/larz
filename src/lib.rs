@@ -70,7 +70,8 @@ pub fn compress_archive_streaming(paths: Vec<String>, output_path: String) {
 		output_file_name,
 		output_path,
 		(timer.elapsed_ms() as f32 / 1000.0)
-	).unwrap();
+	)
+	.unwrap();
 	buf_out.flush().unwrap();
 }
 
@@ -99,7 +100,8 @@ pub fn extract_archive_streaming(paths: Vec<String>, output_path: String) {
 		"Extracted archive(s) to filesystem (path: {}) in {} seconds.",
 		output_path,
 		(timer.elapsed_ms() as f32 / 1000.0)
-	).unwrap();
+	)
+	.unwrap();
 	buf_out.flush().unwrap();
 }
 
@@ -158,7 +160,8 @@ pub fn compress_archive_memory(paths: Vec<String>, output_path: String) {
 		output_file_name,
 		output_path,
 		(timer.elapsed_ms() as f32 / 1000.0)
-	).unwrap();
+	)
+	.unwrap();
 	buf_out.flush().unwrap();
 }
 
@@ -188,6 +191,7 @@ pub fn extract_archive_memory(paths: Vec<String>, output_path: String) {
 		"Extracted archive(s) to filesystem (path: {}) in {} seconds.",
 		output_path,
 		(timer.elapsed_ms() as f32 / 1000.0)
-	).unwrap();
+	)
+	.unwrap();
 	buf_out.flush().unwrap();
 }
