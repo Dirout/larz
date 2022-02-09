@@ -14,6 +14,7 @@
 #![feature(panic_info_message)]
 mod lib;
 
+use anyhow::Context;
 use clap::{arg, crate_version, App, ArgMatches};
 use lazy_static::lazy_static;
 use mimalloc::MiMalloc;
@@ -23,11 +24,14 @@ use mimalloc::MiMalloc;
 static GLOBAL: MiMalloc = MiMalloc;
 
 lazy_static! {
+  ///
+  static ref ARGS: Vec<std::ffi::OsString> = argfile::expand_args_from(wild::args_os(), argfile::parse_fromfile, argfile::PREFIX,).unwrap();
+
 	/// The command-line interface (CLI) of larz
-	static ref APP: clap::App<'static> = App::new("larz").version(crate_version!()).author("Emil Sayahi").about("larz is an archive tool for efficient decompression.").subcommand(App::new("show").about("Shows information regarding the usage and handling of this software").arg(arg!(-w --warranty "Prints warranty information")).arg(arg!(-c --conditions "Prints conditions information"))).subcommand(App::new("compress").about("Archive a file or set of files").arg(arg!(<PATH> "Path to a file or directory").required(true).takes_value(true).multiple_values(true)).arg(arg!(-o --out "Specify an output file path for the archive").required(true).takes_value(true))).subcommand(App::new("extract").about("Decompress an archive").arg(arg!(<PATH> "Path to an archive file").required(true).takes_value(true).multiple_values(true)).arg(arg!(-o --out "Specify an output directory path for the extracted contents").required(true).takes_value(true)));
+	static ref APP: clap::App<'static> = App::new("larz").version(crate_version!()).author("Emil Sayahi").about("larz is an archive tool for efficient decompression.").subcommand(App::new("show").about("Shows information regarding the usage and handling of this software").arg(arg!(-w --warranty "Prints warranty information")).arg(arg!(-c --conditions "Prints conditions information"))).subcommand(App::new("compress").about("Archive & compress a file or set of files").arg(arg!(<PATH> "Path to a file or directory").required(true).takes_value(true).multiple_values(true)).arg(arg!(-o --out "Specify an output file path for the archive").required(true).takes_value(true)).arg(arg!(-m --memory "Perform this operation solely in memory"))).subcommand(App::new("extract").about("Decompress & extract an archive").arg(arg!(<PATH> "Path to an archive file").required(true).takes_value(true).multiple_values(true)).arg(arg!(-o --out "Specify an output directory path for the extracted contents").required(true).takes_value(true)).arg(arg!(-m --memory "Perform this operation solely in memory")));
 
 	/// The arguments passed to the larz CLI
-	static ref MATCHES: ArgMatches = APP.clone().get_matches();
+	static ref MATCHES: ArgMatches = APP.clone().get_matches_from(ARGS.clone().into_iter());
 }
 
 /// The main function of larz's CLI
@@ -57,13 +61,53 @@ fn main() {
 			show(show_matches);
 		}
 		Some(("compress", package_matches)) => {
-			lib::compress_archive(package_matches);
+			compress(package_matches);
 		}
 		Some(("extract", package_matches)) => {
-			lib::extract_archive(package_matches);
+			extract(package_matches);
 		}
 		None => println!("{}", APP.get_about().unwrap()),
 		_ => unreachable!(), // If all subcommands are defined above, anything else is unreachable!()
+	}
+}
+
+fn extract(matches: &clap::ArgMatches) {
+	let paths: Vec<String> = matches
+		.values_of("PATH")
+		.with_context(|| "No file paths were given".to_string())
+		.unwrap()
+		.map(|s| s.to_string())
+		.collect();
+	let output_path: String = matches
+		.value_of("out")
+		.with_context(|| "No output path was given".to_string())
+		.unwrap()
+		.to_string();
+	let in_memory = matches.is_present("memory");
+	if in_memory {
+		lib::extract_archive_memory(paths, output_path);
+	} else {
+		lib::extract_archive_streaming(paths, output_path);
+	}
+}
+
+fn compress(matches: &clap::ArgMatches) {
+	let paths: Vec<String> = matches
+		.values_of("PATH")
+		.with_context(|| "No file paths were given".to_string())
+		.unwrap()
+		.map(|s| s.to_string())
+		.collect();
+	let output_path: String = matches
+		.value_of("out")
+		.with_context(|| "No output path was given".to_string())
+		.unwrap()
+		.to_string();
+	let in_memory = matches.is_present("memory");
+	if in_memory {
+		lib::compress_archive_memory(paths, output_path);
+	} else {
+		lib::compress_archive_streaming(paths, output_path);
 	}
 }
 
