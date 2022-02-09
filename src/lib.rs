@@ -42,7 +42,7 @@ pub fn compress_archive_streaming(paths: Vec<String>, output_path: String) {
 	let mut tar = tar::Builder::new(compressor);
 
 	for fs_path in paths {
-		writeln!(buf_out, "Compressing {} … ", fs_path);
+		writeln!(buf_out, "Compressing {} … ", fs_path).unwrap();
 		let path_buf = PathBuf::from(&fs_path);
 		match path_buf.is_dir() {
 			true => {
@@ -70,7 +70,7 @@ pub fn compress_archive_streaming(paths: Vec<String>, output_path: String) {
 		output_file_name,
 		output_path,
 		(timer.elapsed_ms() as f32 / 1000.0)
-	);
+	).unwrap();
 	buf_out.flush().unwrap();
 }
 
@@ -99,7 +99,7 @@ pub fn extract_archive_streaming(paths: Vec<String>, output_path: String) {
 		"Extracted archive(s) to filesystem (path: {}) in {} seconds.",
 		output_path,
 		(timer.elapsed_ms() as f32 / 1000.0)
-	);
+	).unwrap();
 	buf_out.flush().unwrap();
 }
 
@@ -121,7 +121,7 @@ pub fn compress_archive_memory(paths: Vec<String>, output_path: String) {
 	let mut tar = tar::Builder::new(buf_tar);
 
 	for fs_path in paths {
-		writeln!(buf_out, "Compressing {} … ", fs_path);
+		writeln!(buf_out, "Compressing {} … ", fs_path).unwrap();
 		let path_buf = PathBuf::from(&fs_path);
 		match path_buf.is_dir() {
 			true => {
@@ -158,7 +158,7 @@ pub fn compress_archive_memory(paths: Vec<String>, output_path: String) {
 		output_file_name,
 		output_path,
 		(timer.elapsed_ms() as f32 / 1000.0)
-	);
+	).unwrap();
 	buf_out.flush().unwrap();
 }
 
@@ -188,6 +188,6 @@ pub fn extract_archive_memory(paths: Vec<String>, output_path: String) {
 		"Extracted archive(s) to filesystem (path: {}) in {} seconds.",
 		output_path,
 		(timer.elapsed_ms() as f32 / 1000.0)
-	);
+	).unwrap();
 	buf_out.flush().unwrap();
 }
