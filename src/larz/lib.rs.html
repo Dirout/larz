@@ -196,6 +196,10 @@
 <span id="191">191</span>
 <span id="192">192</span>
 <span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::fs</span>;
 <span class="comment">/*
 	This file is part of larz.
@@ -268,7 +272,8 @@
 		<span class="ident">output_file_name</span>,
 		<span class="ident">output_path</span>,
 		(<span class="ident">timer</span>.<span class="ident">elapsed_ms</span>() <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="number">1000.0</span>)
-	).<span class="ident">unwrap</span>();
+	)
+	.<span class="ident">unwrap</span>();
 	<span class="ident">buf_out</span>.<span class="ident">flush</span>().<span class="ident">unwrap</span>();
 }
 
@@ -297,7 +302,8 @@
 		<span class="string">&quot;Extracted archive(s) to filesystem (path: {}) in {} seconds.&quot;</span>,
 		<span class="ident">output_path</span>,
 		(<span class="ident">timer</span>.<span class="ident">elapsed_ms</span>() <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="number">1000.0</span>)
-	).<span class="ident">unwrap</span>();
+	)
+	.<span class="ident">unwrap</span>();
 	<span class="ident">buf_out</span>.<span class="ident">flush</span>().<span class="ident">unwrap</span>();
 }
 
@@ -356,7 +362,8 @@
 		<span class="ident">output_file_name</span>,
 		<span class="ident">output_path</span>,
 		(<span class="ident">timer</span>.<span class="ident">elapsed_ms</span>() <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="number">1000.0</span>)
-	).<span class="ident">unwrap</span>();
+	)
+	.<span class="ident">unwrap</span>();
 	<span class="ident">buf_out</span>.<span class="ident">flush</span>().<span class="ident">unwrap</span>();
 }
 
@@ -386,7 +393,8 @@
 		<span class="string">&quot;Extracted archive(s) to filesystem (path: {}) in {} seconds.&quot;</span>,
 		<span class="ident">output_path</span>,
 		(<span class="ident">timer</span>.<span class="ident">elapsed_ms</span>() <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="number">1000.0</span>)
-	).<span class="ident">unwrap</span>();
+	)
+	.<span class="ident">unwrap</span>();
 	<span class="ident">buf_out</span>.<span class="ident">flush</span>().<span class="ident">unwrap</span>();
 }
 </code></pre></div>
