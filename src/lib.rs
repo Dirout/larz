@@ -96,7 +96,7 @@ pub fn extract_archive_streaming(paths: Vec<String>, output_path: String) {
 	timer.stop();
 	writeln!(
 		buf_out,
-		"\nExtracted archive(s) to filesystem (path: {}) in {} seconds.",
+		"Extracted archive(s) to filesystem (path: {}) in {} seconds.",
 		output_path,
 		(timer.elapsed_ms() as f32 / 1000.0)
 	);
@@ -154,7 +154,7 @@ pub fn compress_archive_memory(paths: Vec<String>, output_path: String) {
 
 	writeln!(
 		buf_out,
-		"Wrote archive '{}' to filesystem (path: {}) in {} seconds.",
+		"\nWrote archive '{}' to filesystem (path: {}) in {} seconds.",
 		output_file_name,
 		output_path,
 		(timer.elapsed_ms() as f32 / 1000.0)
