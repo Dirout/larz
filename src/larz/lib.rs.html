@@ -294,7 +294,7 @@
 	<span class="ident">timer</span>.<span class="ident">stop</span>();
 	<span class="macro">writeln!</span>(
 		<span class="ident">buf_out</span>,
-		<span class="string">&quot;\nExtracted archive(s) to filesystem (path: {}) in {} seconds.&quot;</span>,
+		<span class="string">&quot;Extracted archive(s) to filesystem (path: {}) in {} seconds.&quot;</span>,
 		<span class="ident">output_path</span>,
 		(<span class="ident">timer</span>.<span class="ident">elapsed_ms</span>() <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="number">1000.0</span>)
 	);
@@ -352,7 +352,7 @@
 
 	<span class="macro">writeln!</span>(
 		<span class="ident">buf_out</span>,
-		<span class="string">&quot;Wrote archive &#39;{}&#39; to filesystem (path: {}) in {} seconds.&quot;</span>,
+		<span class="string">&quot;\nWrote archive &#39;{}&#39; to filesystem (path: {}) in {} seconds.&quot;</span>,
 		<span class="ident">output_file_name</span>,
 		<span class="ident">output_path</span>,
 		(<span class="ident">timer</span>.<span class="ident">elapsed_ms</span>() <span class="kw">as</span> <span class="ident">f32</span> <span class="op">/</span> <span class="number">1000.0</span>)
