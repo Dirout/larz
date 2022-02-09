@@ -15,7 +15,7 @@
 cargo-features = ["strip"]
 [package]
 name = "larz"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Emil Sayahi <limesayahi@gmail.com>"]
 edition = "2021"
 resolver = "2"
