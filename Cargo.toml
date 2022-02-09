@@ -58,7 +58,7 @@ lto = true
 incremental = false
 rpath = false
 panic = 'abort'
-strip = "symbols"
+strip = true
 
 [profile.release.build-override]
 opt-level = 3
