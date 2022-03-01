@@ -17,7 +17,7 @@ jobs:
       options: --privileged
     steps:
       - name: Checkout codebase
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install compiler toolchain
         run: |
           pacman -Syu gcc git openssh base-devel --noconfirm

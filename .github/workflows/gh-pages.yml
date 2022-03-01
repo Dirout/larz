@@ -13,11 +13,11 @@ jobs:
         default: true
         profile: default
     - name: Checkout codebase
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
           path: ./larz
     - name: Checkout GitHub Pages environment
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
           ref: gh-pages
           path: ./gh-pages
