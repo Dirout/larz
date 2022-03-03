@@ -59,7 +59,7 @@ jobs:
           chmod 400 /root/.ssh/aur
           ssh-keyscan -H aur.archlinux.org >> /root/.ssh/known_hosts
       - name: Upload larz Pacman package
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: x86_64-larz.pacman
           path: larz-*-x86_64.tar.gz

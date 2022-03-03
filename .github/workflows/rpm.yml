@@ -42,7 +42,7 @@ jobs:
           command: rpm
           args: build -v
       - name: Upload larz build artifact to GitHub
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: x86_64-larz.rpm.gnu+linux
           path: ./target/release/rpmbuild/RPMS/x86_64/larz-*.x86_64.rpm
