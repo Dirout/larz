@@ -15,7 +15,7 @@
 mod lib;
 
 use anyhow::Context;
-use clap::{arg, crate_version, App, ArgMatches};
+use clap::{arg, crate_version, ArgMatches, Command};
 use lazy_static::lazy_static;
 use mimalloc::MiMalloc;
 
@@ -28,7 +28,7 @@ lazy_static! {
   static ref ARGS: Vec<std::ffi::OsString> = argfile::expand_args_from(wild::args_os(), argfile::parse_fromfile, argfile::PREFIX,).unwrap();
 
 	/// The command-line interface (CLI) of larz
-	static ref APP: clap::App<'static> = App::new("larz").version(crate_version!()).author("Emil Sayahi").about("larz is an archive tool for efficient decompression.").subcommand(App::new("show").about("Shows information regarding the usage and handling of this software").arg(arg!(-w --warranty "Prints warranty information")).arg(arg!(-c --conditions "Prints conditions information"))).subcommand(App::new("compress").about("Archive & compress a file or set of files").arg(arg!(<PATH> "Path to a file or directory").required(true).takes_value(true).multiple_values(true)).arg(arg!(-o --out "Specify an output file path for the archive").required(true).takes_value(true)).arg(arg!(-m --memory "Perform this operation solely in memory"))).subcommand(App::new("extract").about("Decompress & extract an archive").arg(arg!(<PATH> "Path to an archive file").required(true).takes_value(true).multiple_values(true)).arg(arg!(-o --out "Specify an output directory path for the extracted contents").required(true).takes_value(true)).arg(arg!(-m --memory "Perform this operation solely in memory")));
+	static ref APP: clap::Command<'static> = Command::new("larz").version(crate_version!()).author("Emil Sayahi").about("larz is an archive tool for efficient decompression.").subcommand(Command::new("show").about("Shows information regarding the usage and handling of this software").arg(arg!(-w --warranty "Prints warranty information")).arg(arg!(-c --conditions "Prints conditions information"))).subcommand(Command::new("compress").about("Archive & compress a file or set of files").arg(arg!(<PATH> "Path to a file or directory").required(true).takes_value(true).multiple_values(true)).arg(arg!(-o --out "Specify an output file path for the archive").required(true).takes_value(true)).arg(arg!(-m --memory "Perform this operation solely in memory"))).subcommand(Command::new("extract").about("Decompress & extract an archive").arg(arg!(<PATH> "Path to an archive file").required(true).takes_value(true).multiple_values(true)).arg(arg!(-o --out "Specify an output directory path for the extracted contents").required(true).takes_value(true)).arg(arg!(-m --memory "Perform this operation solely in memory")));
 
 	/// The arguments passed to the larz CLI
 	static ref MATCHES: ArgMatches = APP.clone().get_matches_from(ARGS.clone().into_iter());
