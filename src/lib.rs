@@ -238,7 +238,7 @@ pub fn get_absolute_path(path: String) -> PathBuf {
 		raw_pathbuf
 	};
 	let pathbuf_result = std::fs::canonicalize(&completed_pathbuf);
-	
+
 	if pathbuf_result.is_ok() {
 		pathbuf_result.unwrap()
 	} else {
