@@ -233,7 +233,8 @@ pub fn get_absolute_path(path: String) -> PathBuf {
 		raw_pathbuf
 	};
 	let pathbuf_result = std::fs::canonicalize(&completed_pathbuf);
-	let pathbuf = if pathbuf_result.is_ok() {
+	
+	if pathbuf_result.is_ok() {
 		pathbuf_result.unwrap()
 	} else {
 		if completed_pathbuf.is_absolute() {
@@ -242,6 +243,5 @@ pub fn get_absolute_path(path: String) -> PathBuf {
 			std::env::current_dir().unwrap().join(&completed_pathbuf)
 		}
 		.clean()
-	};
-	pathbuf
+	}
 }
