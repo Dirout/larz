@@ -215,9 +215,9 @@ pub fn extract_archive_memory(paths: Vec<String>, output_path: String) {
 }
 
 /// Get an absolute, canonical path from a String
-/// 
+///
 /// # Arguments
-/// 
+///
 /// * `path` - The given String to evaluate
 pub fn get_absolute_path(path: String) -> PathBuf {
 	let raw_pathbuf = PathBuf::from(&path);
