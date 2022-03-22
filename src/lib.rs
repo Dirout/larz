@@ -220,32 +220,31 @@ pub fn extract_archive_memory(paths: Vec<String>, output_path: String) {
 ///
 /// * `path` - The given String to evaluate
 pub fn get_absolute_path(path: String) -> PathBuf {
-	let raw_pathbuf = PathBuf::from(&path);
-	let completed_pathbuf = if raw_pathbuf.starts_with("~") {
-		let home_dir = home::home_dir();
-		if home_dir.is_some() {
-			let mut raw_str = raw_pathbuf.to_string_lossy().to_string();
-			raw_str = raw_str.replacen(
-				'~',
-				home_dir.unwrap().to_string_lossy().to_string().as_str(),
-				1,
-			);
-			PathBuf::from(raw_str)
-		} else {
-			raw_pathbuf
-		}
-	} else {
-		raw_pathbuf
-	};
-	let pathbuf_result = std::fs::canonicalize(&completed_pathbuf);
+	let raw_pathbuf = PathBuf::from(&path).clean();
+	let canonical_pathbuf_result = std::fs::canonicalize(&raw_pathbuf);
 
-	if pathbuf_result.is_ok() {
-		pathbuf_result.unwrap()
+	if canonical_pathbuf_result.is_ok() {
+		canonical_pathbuf_result.unwrap()
 	} else {
-		if completed_pathbuf.is_absolute() {
-			completed_pathbuf
+		if raw_pathbuf.is_absolute() {
+			raw_pathbuf
 		} else {
-			std::env::current_dir().unwrap().join(&completed_pathbuf)
+			if raw_pathbuf.starts_with("~") {
+				let home_dir = home::home_dir();
+				if home_dir.is_some() {
+					let mut raw_str = raw_pathbuf.to_string_lossy().to_string();
+					raw_str = raw_str.replacen(
+						'~',
+						home_dir.unwrap().to_string_lossy().to_string().as_str(),
+						1,
+					);
+					PathBuf::from(raw_str)
+				} else {
+					raw_pathbuf
+				}
+			} else {
+				std::env::current_dir().unwrap().join(&raw_pathbuf)
+			}
 		}
 		.clean()
 	}
