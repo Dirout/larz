@@ -229,21 +229,21 @@ pub fn get_absolute_path(path: String) -> PathBuf {
 		if raw_pathbuf.is_absolute() {
 			raw_pathbuf
 		} else if raw_pathbuf.starts_with("~") {
-  				let home_dir = home::home_dir();
-  				if home_dir.is_some() {
-  					let mut raw_str = raw_pathbuf.to_string_lossy().to_string();
-  					raw_str = raw_str.replacen(
-  						'~',
-  						home_dir.unwrap().to_string_lossy().to_string().as_str(),
-  						1,
-  					);
-  					PathBuf::from(raw_str)
-  				} else {
-  					raw_pathbuf
-  				}
-  			} else {
-  				std::env::current_dir().unwrap().join(&raw_pathbuf)
-  			}
+			let home_dir = home::home_dir();
+			if home_dir.is_some() {
+				let mut raw_str = raw_pathbuf.to_string_lossy().to_string();
+				raw_str = raw_str.replacen(
+					'~',
+					home_dir.unwrap().to_string_lossy().to_string().as_str(),
+					1,
+				);
+				PathBuf::from(raw_str)
+			} else {
+				raw_pathbuf
+			}
+		} else {
+			std::env::current_dir().unwrap().join(&raw_pathbuf)
+		}
 		.clean()
 	}
 }
