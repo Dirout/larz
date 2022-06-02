@@ -40,7 +40,7 @@ doc = true
 [dependencies]
 anyhow = "1.0.56"
 argfile = "0.1.4"
-clap = { version = "3.1.6", features = ["cargo", "suggestions", "color", "wrap_help", "unicode"] }
+clap = { version = "3.1.18", features = ["cargo", "suggestions", "color", "wrap_help", "unicode"] }
 home = "0.5.3"
 lazy_static = "1.4.0"
 lz4_flex = { version = "0.9.3", features = ["checked-decode", "frame"] }
