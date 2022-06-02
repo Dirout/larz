@@ -37,7 +37,7 @@ jobs:
           args: --all-targets --release
       - name: Commit changes, if any
         run: |
-          git config --global user.name 'depi'
+          git config --global user.name 'larz'
           git config --global user.email 'Dirout@users.noreply.github.com'
           git diff --quiet && git diff --staged --quiet || git commit -am "Automatically update dependencies"
           git push
