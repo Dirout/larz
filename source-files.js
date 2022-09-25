@@ -1,3 +1,4 @@
-var sourcesIndex = {};
-sourcesIndex["larz"] = {"name":"","files":["lib.rs"]};
+var sourcesIndex = JSON.parse('{\
+"larz":["",[],["lib.rs"]]\
+}');
 createSourceSidebar();
