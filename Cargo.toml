@@ -41,10 +41,10 @@ doc = true
 anyhow = "1.0.65"
 argfile = "0.1.5"
 clap = { version = "3.2.22", features = ["cargo", "suggestions", "color", "wrap_help", "unicode"] }
-home = "0.5.3"
+home = "0.5.4"
 lazy_static = "1.4.0"
 lz4_flex = { version = "0.9.5", features = ["checked-decode", "frame"] }
-mimalloc = { version = "0.1.29", default-features = false }
+mimalloc = { version = "0.1.30", default-features = false }
 path-clean = "0.1.0"
 stopwatch = "0.0.7"
 tar = "0.4.38"
