@@ -33,7 +33,7 @@ pub fn compress_archive_streaming(paths: Vec<String>, output_path: String) {
 	let mut timer = Stopwatch::start_new();
 
 	let output_pathbuf = get_absolute_path(output_path);
-	std::fs::create_dir_all(&output_pathbuf.parent().unwrap()).unwrap();
+	std::fs::create_dir_all(output_pathbuf.parent().unwrap()).unwrap();
 	let output_file_name = output_pathbuf.file_stem().unwrap().to_str().unwrap();
 
 	let f = File::create(&output_pathbuf).expect("Unable to create file");
@@ -123,7 +123,7 @@ pub fn compress_archive_memory(paths: Vec<String>, output_path: String) {
 	let mut timer = Stopwatch::start_new();
 
 	let output_pathbuf = get_absolute_path(output_path);
-	std::fs::create_dir_all(&output_pathbuf.parent().unwrap()).unwrap();
+	std::fs::create_dir_all(output_pathbuf.parent().unwrap()).unwrap();
 	let output_file_name = output_pathbuf.file_stem().unwrap().to_str().unwrap();
 
 	let buf_tar: BufWriter<Vec<u8>> = BufWriter::new(Vec::new());
