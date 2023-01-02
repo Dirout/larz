@@ -18,7 +18,7 @@ use std::io::BufReader;
 use std::io::BufWriter;
 use std::io::Write;
 use std::path::PathBuf;
-use stopwatch::Stopwatch;
+use ticky::Stopwatch;
 
 /// Archive a file or set of files
 ///
@@ -67,10 +67,10 @@ pub fn compress_archive_streaming(paths: Vec<String>, output_path: String) {
 
 	writeln!(
 		buf_out,
-		"\nWrote archive '{}' to filesystem (path: {}) in {} seconds.",
+		"\nWrote archive '{}' to filesystem (path: {}) in {:.2} seconds.",
 		output_file_name,
 		output_pathbuf.to_string_lossy(),
-		(timer.elapsed_ms() as f32 / 1000.0)
+		timer.elapsed_ms_whole()
 	)
 	.unwrap();
 	buf_out.flush().unwrap();
@@ -103,9 +103,9 @@ pub fn extract_archive_streaming(paths: Vec<String>, output_path: String) {
 	timer.stop();
 	writeln!(
 		buf_out,
-		"Extracted archive(s) to filesystem (path: {}) in {} seconds.",
+		"Extracted archive(s) to filesystem (path: {}) in {:.2} seconds.",
 		output_pathbuf.to_string_lossy(),
-		(timer.elapsed_ms() as f32 / 1000.0)
+		timer.elapsed_ms_whole()
 	)
 	.unwrap();
 	buf_out.flush().unwrap();
@@ -169,10 +169,10 @@ pub fn compress_archive_memory(paths: Vec<String>, output_path: String) {
 
 	writeln!(
 		buf_out,
-		"\nWrote archive '{}' to filesystem (path: {}) in {} seconds.",
+		"\nWrote archive '{}' to filesystem (path: {}) in {:.2} seconds.",
 		output_file_name,
 		output_pathbuf.to_string_lossy(),
-		(timer.elapsed_ms() as f32 / 1000.0)
+		timer.elapsed_ms_whole()
 	)
 	.unwrap();
 	buf_out.flush().unwrap();
@@ -206,9 +206,9 @@ pub fn extract_archive_memory(paths: Vec<String>, output_path: String) {
 	timer.stop();
 	writeln!(
 		buf_out,
-		"Extracted archive(s) to filesystem (path: {}) in {} seconds.",
+		"Extracted archive(s) to filesystem (path: {}) in {:.2} seconds.",
 		output_pathbuf.to_string_lossy(),
-		(timer.elapsed_ms() as f32 / 1000.0)
+		timer.elapsed_ms_whole()
 	)
 	.unwrap();
 	buf_out.flush().unwrap();

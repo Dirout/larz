@@ -1,4 +1,7 @@
-on: [push]
+on:
+  push:
+    branches:    
+      - 'master'
 
 name: 'Package: RPM for GNU + Linux (x86_64)'
 
@@ -14,11 +17,16 @@ jobs:
         - /sys/fs/cgroup:/sys/fs/cgroup
       options: --privileged
     steps:
-      - name: Checkout codebase
-        uses: actions/checkout@v3
-      - name: Install compiler toolchain
+      - name: Install requisite packages
         run: |
-          sudo dnf -q -y install gcc rpm-build > /dev/null
+          sudo dnf -q -y update > /dev/null
+          sudo dnf -q -y install git gh gcc rpm-build rpmdevtools rpmlint python3-rust2rpm rust-packaging rust cargo tree perl perl-FindBin perl-lib > /dev/null
+      - name: Checkout codebase
+        run: |
+          printf "${{ secrets.PAT }}" | gh auth login --with-token
+          gh repo clone Dirout/larz
+          cd ./larz
+          printf "Repository:\n" && tree -a ./
       - name: Setup Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -26,24 +34,31 @@ jobs:
           target: x86_64-unknown-linux-gnu
           default: true
           profile: minimal
-      - name: Install 'cargo-rpm'
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: cargo-rpm
       - name: Generate RPM package specification
-        uses: actions-rs/cargo@v1
-        with:
-          command: rpm
-          args: init
+        run: |
+          cd ./larz
+          rust2rpm .
+          rpmlint ./rust-larz.spec
+          printf "Repository:\n" && tree -a ./
+      - name: Commit changes to RPM package specification file, if any
+        run: |
+          cd ./larz
+          git config --global --add safe.directory ./
+          git config --global user.name 'larz'
+          git config --global user.email 'Dirout@users.noreply.github.com'
+          git add ./rust-larz.spec
+          git diff --quiet && git diff --staged --quiet || git commit -am "Automatically updated RPM package specification"
+          git push https://${{ secrets.PAT }}@github.com/Dirout/larz.git
       - name: Build & package larz
-        uses: actions-rs/cargo@v1
-        with:
-          command: rpm
-          args: build -v
-      - name: Upload larz build artifact to GitHub
+        run: |
+          cd ./larz
+          cargo install cargo-generate-rpm
+          cargo build --release --all-features
+          cargo generate-rpm
+          tree -a ./
+      - name: Upload larz package to GitHub
         uses: actions/upload-artifact@v3
         with:
           name: x86_64-larz.rpm.gnu+linux
-          path: ./target/release/rpmbuild/RPMS/x86_64/larz-*.x86_64.rpm
+          path: "./larz/target/generate-rpm/*.rpm"
           if-no-files-found: error

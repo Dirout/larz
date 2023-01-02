@@ -1,0 +1,31 @@
+# See the documentation for more information:
+# https://packit.dev/docs/configuration/
+
+specfile_path: rust-larz.spec
+files_to_sync:
+  - rust-larz.spec
+  - packit.yaml
+upstream_package_name: larz
+upstream_project_url: https://github.com/Dirout/larz
+copy_upstream_release_description: true
+issue_repository: https://github.com/Dirout/larz
+downstream_package_name: rust-larz
+srpm_build_deps:
+  - gcc
+  - rust
+  - cargo
+  - rust-packaging
+jobs:
+  - job: copr_build
+    trigger: commit
+    branch: master
+    targets:
+      - fedora-all
+  - job: tests
+    trigger: pull_request
+    targets:
+      - fedora-all
+  - job: propose_downstream
+    trigger: release
+    dist_git_branches:
+      - fedora-all

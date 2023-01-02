@@ -12,7 +12,6 @@
 #
 #    You should have received a copy of the GNU Affero General Public License
 #    along with larz.  If not, see <https://www.gnu.org/licenses/>.
-cargo-features = ["strip"]
 [package]
 name = "larz"
 version = "0.3.1"
@@ -28,7 +27,7 @@ readme = "README"
 [lib]
 name = "larz"
 path = "src/lib.rs"
-crate-type=["rlib", "dylib", "staticlib"]
+crate-type=["rlib", "cdylib", "staticlib"]
 
 [[bin]]
 name = "larz"
@@ -40,14 +39,14 @@ doc = true
 [dependencies]
 anyhow = "1.0.68"
 argfile = "0.1.5"
-clap = { version = "3.2.23", features = ["cargo", "suggestions", "color", "wrap_help", "unicode"] }
+clap = { version = "4.0.32", features = ["cargo", "suggestions", "color", "wrap_help", "unicode"] }
 home = "0.5.4"
 lazy_static = "1.4.0"
 lz4_flex = { version = "0.9.5", features = ["checked-decode", "frame"] }
 mimalloc = { version = "0.1.32", default-features = false }
 path-clean = "0.1.0"
-stopwatch = "0.0.7"
 tar = "0.4.38"
+ticky = "1.0.1"
 wild = "2.1.0"
 
 [profile.release]
@@ -59,7 +58,6 @@ overflow-checks = false
 lto = true
 incremental = false
 rpath = false
-panic = 'abort'
 strip = true
 
 [profile.release.build-override]

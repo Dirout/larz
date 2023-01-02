@@ -9,7 +9,7 @@
 ## Reporting security problems to larz
 
 **DO NOT CREATE AN ISSUE** to report a security problem. Instead, please
-send an email to limesayahi@gmail.com
+send an email to [limesayahi@gmail.com](mailto:limesayahi@gmail.com).
 
 <a name="contact"></a>
 ## Security Point of Contact
@@ -21,23 +21,23 @@ incident reports as fast as possible, within one business day at the latest.
 ## Incident Response Process
 
 In case an incident is discovered or reported, I will follow the following
-process to contain, respond and remediate:
+process to contain, respond, and remediate:
 
 ### 1. Containment
 
 The first step is to find out the root cause, nature and scope of the incident.
 
-- Is still ongoing? If yes, first priority is to stop it.
-- Is the incident outside of my influence? If yes, first priority is to contain it.
-- Find out knows about the incident and who is affected.
-- Find out what data was potentially exposed.
+- Is the incident still ongoing? If so, the first priority is to stop it.
+- Is the incident outside of my influence or control? If so, the first priority is to contain it.
+- Next, find out who knows about the incident and who is affected.
+- Next, find out what data was potentially exposed.
 
 ### 2. Response
 
 After the initial assessment and containment to my best abilities, I will
 document all actions taken in a response plan.
 
-I will create a comment in [the official "Updates" issue](https://github.com/Dirout/larz/issues/19) to inform users about
+I will create a comment in [the 'Security updates' issue](https://github.com/Dirout/larz/issues/19) to inform users about
 the incident and what I actions I took to contain it.
 
 ### 3. Remediation

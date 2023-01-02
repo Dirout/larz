@@ -12,10 +12,10 @@
 	along with larz.  If not, see <https://www.gnu.org/licenses/>.
 */
 #![feature(panic_info_message)]
-mod lib;
 
-use anyhow::Context;
-use clap::{arg, crate_version, ArgMatches, Command};
+use std::path::{PathBuf, Path};
+
+use clap::{arg, crate_version, ArgMatches, Command, value_parser};
 use lazy_static::lazy_static;
 use mimalloc::MiMalloc;
 
@@ -28,7 +28,24 @@ lazy_static! {
   static ref ARGS: Vec<std::ffi::OsString> = argfile::expand_args_from(wild::args_os(), argfile::parse_fromfile, argfile::PREFIX,).unwrap();
 
 	/// The command-line interface (CLI) of larz
-	static ref APP: clap::Command<'static> = Command::new("larz").version(crate_version!()).author("Emil Sayahi").about("larz is an archive tool for efficient decompression.").subcommand(Command::new("show").about("Shows information regarding the usage and handling of this software").arg(arg!(-w --warranty "Prints warranty information")).arg(arg!(-c --conditions "Prints conditions information"))).subcommand(Command::new("compress").about("Archive & compress a file or set of files").arg(arg!(<PATH> "Path to a file or directory").required(true).takes_value(true).multiple_values(true)).arg(arg!(-o --out "Specify an output file path for the archive").required(true).takes_value(true)).arg(arg!(-m --memory "Perform this operation solely in memory"))).subcommand(Command::new("extract").about("Decompress & extract an archive").arg(arg!(<PATH> "Path to an archive file").required(true).takes_value(true).multiple_values(true)).arg(arg!(-o --out "Specify an output directory path for the extracted contents").required(true).takes_value(true)).arg(arg!(-m --memory "Perform this operation solely in memory")));
+	static ref APP: clap::Command = Command::new("larz")
+    .version(crate_version!())
+    .author("Emil Sayahi")
+    .about("larz is an archive tool for efficient decompression.")
+    .subcommand(Command::new("show")
+      .about("Shows information regarding the usage and handling of this software")
+      .arg(arg!(-w --warranty "Prints warranty information"))
+      .arg(arg!(-c --conditions "Prints conditions information")))
+    .subcommand(Command::new("compress")
+      .about("Archive & compress a file or set of files")
+      .arg(arg!(<PATH> "Path to a file or directory").required(true).value_parser(value_parser!(PathBuf)).num_args(1..))
+      .arg(arg!(-o --out "Specify an output file path for the archive").required(true).value_parser(value_parser!(PathBuf)))
+      .arg(arg!(-m --memory "Perform this operation solely in memory")))
+    .subcommand(Command::new("extract")
+      .about("Decompress & extract an archive")
+      .arg(arg!(<PATH> "Path to an archive file").required(true).value_parser(value_parser!(PathBuf)).num_args(1..))
+      .arg(arg!(-o --out "Specify an output directory path for the extracted contents").required(true).value_parser(value_parser!(PathBuf)))
+      .arg(arg!(-m --memory "Perform this operation solely in memory")));
 
 	/// The arguments passed to the larz CLI
 	static ref MATCHES: ArgMatches = APP.clone().get_matches_from(ARGS.clone().into_iter());
@@ -72,42 +89,52 @@ fn main() {
 }
 
 fn extract(matches: &clap::ArgMatches) {
-	let paths: Vec<String> = matches
-		.values_of("PATH")
-		.with_context(|| "No file paths were given".to_string())
-		.unwrap()
-		.map(|s| s.to_string())
-		.collect();
-	let output_path: String = matches
-		.value_of("out")
-		.with_context(|| "No output path was given".to_string())
-		.unwrap()
-		.to_string();
-	let in_memory = matches.is_present("memory");
+	let paths: Vec<PathBuf> = matches
+		.get_many("PATH")
+		.expect("No file paths were given")
+    .map(|&p| Path::new(p).to_path_buf())
+    .collect();
+  let output_path_buf_input = matches
+		.get_one::<PathBuf>("out")
+		.ok_or(anyhow::anyhow!("❌ No output path was given"))
+		.unwrap();
+	let output_path_buf = match std::fs::canonicalize(output_path_buf_input) {
+		Ok(p) => p,
+		Err(_) => std::env::current_dir()
+			.unwrap()
+			.join(path_clean::clean(output_path_buf_input.to_str().unwrap())),
+	};
+	let output_path = output_path_buf.to_str().unwrap();
+	let in_memory = matches.contains_id("memory");
 	if in_memory {
-		lib::extract_archive_memory(paths, output_path);
+		larz::extract_archive_memory(paths, output_path);
 	} else {
-		lib::extract_archive_streaming(paths, output_path);
+		larz::extract_archive_streaming(paths, output_path);
 	}
 }
 
 fn compress(matches: &clap::ArgMatches) {
-	let paths: Vec<String> = matches
-		.values_of("PATH")
-		.with_context(|| "No file paths were given".to_string())
-		.unwrap()
-		.map(|s| s.to_string())
-		.collect();
-	let output_path: String = matches
-		.value_of("out")
-		.with_context(|| "No output path was given".to_string())
-		.unwrap()
-		.to_string();
-	let in_memory = matches.is_present("memory");
+	let paths: Vec<PathBuf> = matches
+		.get_many("PATH")
+		.expect("No file paths were given")
+    .map(|&p| Path::new(p).to_path_buf())
+    .collect();
+  let output_path_buf_input = matches
+		.get_one::<PathBuf>("out")
+		.ok_or(anyhow::anyhow!("❌ No output path was given"))
+		.unwrap();
+	let output_path_buf = match std::fs::canonicalize(output_path_buf_input) {
+		Ok(p) => p,
+		Err(_) => std::env::current_dir()
+			.unwrap()
+			.join(path_clean::clean(output_path_buf_input.to_str().unwrap())),
+	};
+	let output_path = output_path_buf.to_str().unwrap();
+	let in_memory = matches.contains_id("memory");
 	if in_memory {
-		lib::compress_archive_memory(paths, output_path);
+		larz::compress_archive_memory(paths, output_path);
 	} else {
-		lib::compress_archive_streaming(paths, output_path);
+		larz::compress_archive_streaming(paths, output_path);
 	}
 }
 
@@ -119,7 +146,7 @@ fn compress(matches: &clap::ArgMatches) {
 ///
 /// * `conditions` - Prints conditions information
 fn show(matches: &clap::ArgMatches) {
-	if matches.is_present("warranty") {
+	if matches.contains_id("warranty") {
 		// "larz show -w" was run
 		println!(
 			"
@@ -155,7 +182,7 @@ fn show(matches: &clap::ArgMatches) {
   copy of the Program in return for a fee.
   "
 		);
-	} else if matches.is_present("conditions") {
+	} else if matches.contains_id("conditions") {
 		// "larz show -c" was run
 		println!(
 			"
