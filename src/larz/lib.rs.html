@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-34efc64c5083af8d.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-4743e13df3dfe8c4.css"><link rel="stylesheet" disabled href="../../static.files/dark-0e1b889528bd466b.css"><link rel="stylesheet" disabled href="../../static.files/ayu-65289d5d067c7c66.css"><script id="default-settings" ></script><script src="../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-4a084badb5778746.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../larz/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-1f7d512b176f0f72.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-124a1ca42af929b6.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-303867cd4f9d7e56.css" id="mainThemeStyle"><link rel="stylesheet" id="themeStyle" href="../../static.files/light-4743e13df3dfe8c4.css"><link rel="stylesheet" disabled href="../../static.files/dark-0e1b889528bd466b.css"><link rel="stylesheet" disabled href="../../static.files/ayu-65289d5d067c7c66.css"><script id="default-settings" ></script><script src="../../static.files/storage-d43fa987303ecbbb.js"></script><script defer src="../../static.files/source-script-ea63cb6500f71309.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-4a084badb5778746.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../larz/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-5ec35bf9ca753509.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -247,6 +247,36 @@
 <a href="#247" id="247">247</a>
 <a href="#248" id="248">248</a>
 <a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
+<a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
 </pre><pre class="rust"><code><span class="comment">/*
 	This file is part of larz.
 	larz is free software: you can redistribute it and/or modify
@@ -260,47 +290,118 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with larz.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
 */
-</span><span class="kw">use </span>anyhow::Context;
-<span class="kw">use </span>path_clean::PathClean;
-<span class="kw">use </span>std::fs::File;
+
+</span><span class="doccomment">//! # larz
+//! A simple, fast, and efficient file archiver and compressor.
+//! larz creates archives in the [Unix Standard TAR](https://en.wikipedia.org/wiki/Tar_(computing)#UStar_format) format, and compresses them using [LZ4](https://en.wikipedia.org/wiki/LZ4_(compression_algorithm)).
+//!
+//! ## Usage
+//!
+//! ### Compression
+//!
+//! ```rust
+//! use larz::compress_archive_memory;
+//! use std::path::PathBuf;
+//! use std::io::StdoutLock;
+//!
+//! let paths = vec![PathBuf::from(&quot;path/to/file&quot;), PathBuf::from(&quot;path/to/directory&quot;)];
+//! let output_path = PathBuf::from(&quot;path/to/output.larz&quot;);
+//!
+//! compress_archive_memory::&lt;StdoutLock&gt;(paths, output_path, None);
+//! ```
+//!
+//! ### Decompression
+//!
+//! ```rust
+//! use larz::extract_archive_memory;
+//! use std::path::PathBuf;
+//!
+//! let paths = vec![PathBuf::from(&quot;path/to/archive.larz&quot;)];
+//! let output_path = PathBuf::from(&quot;path/to/output&quot;);
+//!
+//! extract_archive_memory(paths, output_path);
+//! ```
+//!
+//! ## Features
+//! - `safe` - Ensures that compression and decompression are performed in a memory-safe manner. This is enabled by default.
+//! - `streaming` - larz supports streaming compression and decompression using the LZ4 frame format. This means that larz can compress and decompress files with larger sizes, without having to load the entire file into memory.\
+//! To enable this feature, use the `streaming` feature flag. This is enabled by default.
+//!
+//! ## Installation
+//! Run `cargo add larz` to add larz to your `Cargo.toml` file.
+//! If you intend on using `larz` as a tool, run `cargo install larz`.
+//!
+//! ## License
+//! larz is licensed under the [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.en.html).
+//!
+//! ## Contributing
+//! Contributions are welcome! Please see [`CONTRIBUTING.md`](https://github.com/Dirout/larz/blob/master/CONTRIBUTING.md)) for more information.
+//!
+//! ## Authors
+//! - [Emil Sayahi](https://github.com/emmyoh)
+//!
+//! ## Acknowledgements
+//! - [`lz4_flex`](https://crates.io/crates/lz4_flex) - The LZ4 compression library used by larz.
+//! - [`tar`](https://crates.io/crates/tar) - The TAR archiving library used by larz.
+
+</span><span class="attr">#![warn(missing_docs)]
+
+</span><span class="kw">use </span>std::fs::File;
 <span class="kw">use </span>std::io::BufReader;
 <span class="kw">use </span>std::io::BufWriter;
 <span class="kw">use </span>std::io::Write;
 <span class="kw">use </span>std::path::PathBuf;
-<span class="kw">use </span>ticky::Stopwatch;
 
-<span class="doccomment">/// Archive a file or set of files
+<span class="doccomment">/// Archive &amp; compress a file or set of files
 ///
 /// # Arguments
 ///
-/// * `PATH` - Path to a file or directory (required)
-</span><span class="kw">pub fn </span>compress_archive_streaming(paths: Vec&lt;String&gt;, output_path: String) {
-	<span class="kw">let </span>stdout = std::io::stdout();
-	<span class="kw">let </span>lock = stdout.lock();
-	<span class="kw">let </span><span class="kw-2">mut </span>buf_out = BufWriter::new(lock);
+/// * `paths` - A list of paths pointing to files or directories intended to be archived
+///
+/// * `output_path` - Path to write the archive to
+///
+/// * `optional_logger` - An optional `BufWriter` to log information to
+///
+/// # Panics
+///
+/// This function will panic if any of the input paths are invalid or cannot be read, if the output path is invalid, or if the archive cannot be written to.
+///
+/// # Examples
+///
+/// ```rust
+/// use larz::compress_archive_streaming;
+/// use std::path::PathBuf;
+/// use std::io::StdoutLock;
+///
+/// let paths = vec![PathBuf::from(&quot;path/to/file&quot;), PathBuf::from(&quot;path/to/directory&quot;)];
+/// let output_path = PathBuf::from(&quot;path/to/output.larz&quot;);
+///
+/// compress_archive_streaming::&lt;StdoutLock&gt;(paths, output_path, None);
+/// ```
+</span><span class="attr">#[cfg(feature = <span class="string">&quot;streaming&quot;</span>)]
+</span><span class="kw">pub fn </span>compress_archive_streaming&lt;W: Write&gt;(
+	paths: Vec&lt;PathBuf&gt;,
+	output_path: PathBuf,
+	<span class="kw-2">mut </span>optional_logger: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>BufWriter&lt;W&gt;&gt;,
+) {
+	std::fs::create_dir_all(<span class="kw-2">&amp;</span>output_path.parent().unwrap()).unwrap();
 
-	<span class="kw">let </span><span class="kw-2">mut </span>timer = Stopwatch::start_new();
-
-	<span class="kw">let </span>output_pathbuf = get_absolute_path(output_path);
-	std::fs::create_dir_all(<span class="kw-2">&amp;</span>output_pathbuf.parent().unwrap()).unwrap();
-	<span class="kw">let </span>output_file_name = output_pathbuf.file_stem().unwrap().to_str().unwrap();
-
-	<span class="kw">let </span>f = File::create(<span class="kw-2">&amp;</span>output_pathbuf).expect(<span class="string">&quot;Unable to create file&quot;</span>);
+	<span class="kw">let </span>f = File::create(<span class="kw-2">&amp;</span>output_path).expect(<span class="string">&quot;Unable to create file&quot;</span>);
 	<span class="kw">let </span>buf = BufWriter::new(f);
 	<span class="kw">let </span>compressor = lz4_flex::frame::FrameEncoder::new(buf);
 	<span class="kw">let </span><span class="kw-2">mut </span>tar = tar::Builder::new(compressor);
 
 	<span class="kw">for </span>fs_path <span class="kw">in </span>paths {
-		<span class="kw">let </span>fs_pathbuf = get_absolute_path(fs_path);
-
-		<span class="macro">writeln!</span>(buf_out, <span class="string">&quot;Compressing {} … &quot;</span>, fs_pathbuf.to_string_lossy()).unwrap();
-		<span class="kw">match </span>fs_pathbuf.is_dir() {
+		<span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>logger) = optional_logger {
+			<span class="macro">writeln!</span>(logger, <span class="string">&quot;Compressing &#39;{}&#39; … &quot;</span>, fs_path.to_string_lossy()).unwrap();
+		}
+		<span class="kw">match </span>fs_path.is_dir() {
 			<span class="bool-val">true </span>=&gt; {
-				tar.append_dir_all(<span class="string">&quot;.&quot;</span>, fs_pathbuf)
+				tar.append_dir_all(<span class="string">&quot;.&quot;</span>, fs_path)
 					.expect(<span class="string">&quot;Failed to write to archive&quot;</span>);
 			}
 			<span class="bool-val">false </span>=&gt; {
-				tar.append_path(fs_pathbuf)
+				tar.append_path(fs_path)
 					.expect(<span class="string">&quot;Failed to write to archive&quot;</span>);
 			}
 		}
@@ -312,83 +413,91 @@
 		.expect(<span class="string">&quot;Unable to finish with compression&quot;</span>)
 		.flush()
 		.unwrap();
-	timer.stop();
-
-	<span class="macro">writeln!</span>(
-		buf_out,
-		<span class="string">&quot;\nWrote archive &#39;{}&#39; to filesystem (path: {}) in {:.2} seconds.&quot;</span>,
-		output_file_name,
-		output_pathbuf.to_string_lossy(),
-		timer.elapsed_ms_whole()
-	)
-	.unwrap();
-	buf_out.flush().unwrap();
 }
 
-<span class="doccomment">/// Decompress an archive
+<span class="doccomment">/// Extract &amp; decompress an existing archive
 ///
 /// # Arguments
 ///
-/// * `PATH` - Path to an archive (required)
-</span><span class="kw">pub fn </span>extract_archive_streaming(paths: Vec&lt;String&gt;, output_path: String) {
-	<span class="kw">let </span>stdout = std::io::stdout();
-	<span class="kw">let </span>lock = stdout.lock();
-	<span class="kw">let </span><span class="kw-2">mut </span>buf_out = BufWriter::new(lock);
-	<span class="kw">let </span><span class="kw-2">mut </span>timer = Stopwatch::start_new();
-	<span class="kw">let </span>output_pathbuf = get_absolute_path(output_path);
-	std::fs::create_dir_all(<span class="kw-2">&amp;</span>output_pathbuf).unwrap();
+/// * `paths` - A list of paths pointing to `larz` archives
+///
+/// * `output_path` - Path to write the extracted files to
+///
+/// # Panics
+///
+/// This function will panic if any of the input paths are invalid or cannot be read, or if the output path is invalid or cannot be written to.
+///
+/// # Examples
+///
+/// ```rust
+/// use larz::extract_archive_streaming;
+/// use std::path::PathBuf;
+///
+/// let paths = vec![PathBuf::from(&quot;path/to/archive.larz&quot;)];
+/// let output_path = PathBuf::from(&quot;path/to/output&quot;);
+///
+/// extract_archive_streaming(paths, output_path);
+/// ```
+</span><span class="attr">#[cfg(feature = <span class="string">&quot;streaming&quot;</span>)]
+</span><span class="kw">pub fn </span>extract_archive_streaming(paths: Vec&lt;PathBuf&gt;, output_path: PathBuf) {
+	std::fs::create_dir_all(<span class="kw-2">&amp;</span>output_path).unwrap();
 
 	<span class="kw">for </span>file_path <span class="kw">in </span>paths {
-		<span class="kw">let </span>file_pathbuf = get_absolute_path(file_path);
-
-		<span class="kw">let </span>f = std::fs::File::open(file_pathbuf).expect(<span class="string">&quot;Could not read archive file&quot;</span>);
+		<span class="kw">let </span>f = std::fs::File::open(file_path).expect(<span class="string">&quot;Could not read archive file&quot;</span>);
 		<span class="kw">let </span>buf = BufReader::new(f);
 		<span class="kw">let </span>extractor = lz4_flex::frame::FrameDecoder::new(buf);
 		<span class="kw">let </span><span class="kw-2">mut </span>tar = tar::Archive::new(extractor);
-		tar.unpack(<span class="kw-2">&amp;</span>output_pathbuf)
-			.expect(<span class="string">&quot;Could not extract archive&quot;</span>);
+		tar.unpack(<span class="kw-2">&amp;</span>output_path).expect(<span class="string">&quot;Could not extract archive&quot;</span>);
 	}
-
-	timer.stop();
-	<span class="macro">writeln!</span>(
-		buf_out,
-		<span class="string">&quot;Extracted archive(s) to filesystem (path: {}) in {:.2} seconds.&quot;</span>,
-		output_pathbuf.to_string_lossy(),
-		timer.elapsed_ms_whole()
-	)
-	.unwrap();
-	buf_out.flush().unwrap();
 }
 
-<span class="doccomment">/// Archive a file or set of files using only memory
+<span class="doccomment">/// Archive &amp; compress a file or set of files, in memory
 ///
 /// # Arguments
 ///
-/// * `PATH` - Path to a file or directory (required)
-</span><span class="kw">pub fn </span>compress_archive_memory(paths: Vec&lt;String&gt;, output_path: String) {
-	<span class="kw">let </span>stdout = std::io::stdout();
-	<span class="kw">let </span>lock = stdout.lock();
-	<span class="kw">let </span><span class="kw-2">mut </span>buf_out = BufWriter::new(lock);
-	<span class="kw">let </span><span class="kw-2">mut </span>timer = Stopwatch::start_new();
-
-	<span class="kw">let </span>output_pathbuf = get_absolute_path(output_path);
-	std::fs::create_dir_all(<span class="kw-2">&amp;</span>output_pathbuf.parent().unwrap()).unwrap();
-	<span class="kw">let </span>output_file_name = output_pathbuf.file_stem().unwrap().to_str().unwrap();
+/// * `paths` - A list of paths pointing to files or directories intended to be archived
+///
+/// * `output_path` - Path to write the archive to
+///
+/// * `optional_logger` - An optional `BufWriter` to log information to
+///
+/// # Panics
+///
+/// This function will panic if any of the input paths are invalid or cannot be read, if the output path is invalid, or if the archive cannot be written to.
+///
+/// # Examples
+///
+/// ```rust
+/// use larz::compress_archive_memory;
+/// use std::path::PathBuf;
+/// use std::io::StdoutLock;
+///
+/// let paths = vec![PathBuf::from(&quot;path/to/file&quot;), PathBuf::from(&quot;path/to/directory&quot;)];
+/// let output_path = PathBuf::from(&quot;path/to/output.larz&quot;);
+///
+/// compress_archive_memory::&lt;StdoutLock&gt;(paths, output_path, None);
+/// ```
+</span><span class="kw">pub fn </span>compress_archive_memory&lt;W: Write&gt;(
+	paths: Vec&lt;PathBuf&gt;,
+	output_path: PathBuf,
+	<span class="kw-2">mut </span>optional_logger: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>BufWriter&lt;W&gt;&gt;,
+) {
+	std::fs::create_dir_all(<span class="kw-2">&amp;</span>output_path.parent().unwrap()).unwrap();
 
 	<span class="kw">let </span>buf_tar: BufWriter&lt;Vec&lt;u8&gt;&gt; = BufWriter::new(Vec::new());
 	<span class="kw">let </span><span class="kw-2">mut </span>tar = tar::Builder::new(buf_tar);
 
 	<span class="kw">for </span>fs_path <span class="kw">in </span>paths {
-		<span class="kw">let </span>fs_pathbuf = get_absolute_path(fs_path);
-
-		<span class="macro">writeln!</span>(buf_out, <span class="string">&quot;Compressing {} … &quot;</span>, fs_pathbuf.to_string_lossy()).unwrap();
-		<span class="kw">match </span>fs_pathbuf.is_dir() {
+		<span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>logger) = optional_logger {
+			<span class="macro">writeln!</span>(logger, <span class="string">&quot;Compressing &#39;{}&#39; … &quot;</span>, fs_path.to_string_lossy()).unwrap();
+		}
+		<span class="kw">match </span>fs_path.is_dir() {
 			<span class="bool-val">true </span>=&gt; {
-				tar.append_dir_all(<span class="string">&quot;.&quot;</span>, fs_pathbuf)
+				tar.append_dir_all(<span class="string">&quot;.&quot;</span>, fs_path)
 					.expect(<span class="string">&quot;Failed to write to archive&quot;</span>);
 			}
 			<span class="bool-val">false </span>=&gt; {
-				tar.append_path(fs_pathbuf)
+				tar.append_path(fs_path)
 					.expect(<span class="string">&quot;Failed to write to archive&quot;</span>);
 			}
 		}
@@ -399,102 +508,53 @@
 	<span class="kw">let </span><span class="kw-2">mut </span>buf_tar_again = tar.into_inner().unwrap();
 	buf_tar_again.flush().unwrap();
 
-	std::fs::create_dir_all(output_pathbuf.parent().unwrap()).unwrap();
-	<span class="kw">let </span>f = File::create(<span class="kw-2">&amp;</span>output_pathbuf).expect(<span class="string">&quot;Unable to create file&quot;</span>);
+	std::fs::create_dir_all(output_path.parent().unwrap()).unwrap();
+	<span class="kw">let </span>f = File::create(<span class="kw-2">&amp;</span>output_path).expect(<span class="string">&quot;Unable to create file&quot;</span>);
 	<span class="kw">let </span><span class="kw-2">mut </span>buf = BufWriter::new(f);
 	buf.write_all(<span class="kw-2">&amp;</span>lz4_flex::block::compress_prepend_size(
 		<span class="kw-2">&amp;</span>buf_tar_again.into_inner().unwrap(),
 	))
-	.with_context(|| {
-		<span class="macro">format!</span>(
-			<span class="string">&quot;Could not write data to {}&quot;</span>,
-			output_pathbuf.to_string_lossy()
-		)
-	})
-	.unwrap(); <span class="comment">// Write data to file
+	.expect(<span class="kw-2">&amp;</span><span class="macro">format!</span>(
+		<span class="string">&quot;Could not write data to {}&quot;</span>,
+		output_path.to_string_lossy()
+	)); <span class="comment">// Write data to file
 	</span>buf.flush().unwrap();
-
-	timer.stop();
-
-	<span class="macro">writeln!</span>(
-		buf_out,
-		<span class="string">&quot;\nWrote archive &#39;{}&#39; to filesystem (path: {}) in {:.2} seconds.&quot;</span>,
-		output_file_name,
-		output_pathbuf.to_string_lossy(),
-		timer.elapsed_ms_whole()
-	)
-	.unwrap();
-	buf_out.flush().unwrap();
 }
 
-<span class="doccomment">/// Decompress an archive created using only memory
+<span class="doccomment">/// Extract &amp; decompress an existing archive, in memory
 ///
 /// # Arguments
 ///
-/// * `PATH` - Path to an archive (required)
-</span><span class="kw">pub fn </span>extract_archive_memory(paths: Vec&lt;String&gt;, output_path: String) {
-	<span class="kw">let </span>stdout = std::io::stdout();
-	<span class="kw">let </span>lock = stdout.lock();
-	<span class="kw">let </span><span class="kw-2">mut </span>buf_out = BufWriter::new(lock);
-	<span class="kw">let </span><span class="kw-2">mut </span>timer = Stopwatch::start_new();
-	<span class="kw">let </span>output_pathbuf = get_absolute_path(output_path);
-	std::fs::create_dir_all(<span class="kw-2">&amp;</span>output_pathbuf).unwrap();
+/// * `paths` - A list of paths pointing to `larz` archives
+///
+/// * `output_path` - Path to write the extracted files to
+///
+/// # Panics
+///
+/// This function will panic if any of the input paths are invalid or cannot be read, or if the output path is invalid or cannot be written to.
+///
+/// # Examples
+///
+/// ```rust
+/// use larz::extract_archive_memory;
+/// use std::path::PathBuf;
+///
+/// let paths = vec![PathBuf::from(&quot;path/to/archive.larz&quot;)];
+/// let output_path = PathBuf::from(&quot;path/to/output&quot;);
+///
+/// extract_archive_memory(paths, output_path);
+/// ```
+</span><span class="kw">pub fn </span>extract_archive_memory(paths: Vec&lt;PathBuf&gt;, output_path: PathBuf) {
+	std::fs::create_dir_all(<span class="kw-2">&amp;</span>output_path).unwrap();
 
 	<span class="kw">for </span>file_path <span class="kw">in </span>paths {
-		<span class="kw">let </span>file_pathbuf = get_absolute_path(file_path);
-
-		<span class="kw">let </span>compressed = std::fs::read(file_pathbuf).expect(<span class="string">&quot;Could not read archive file&quot;</span>);
+		<span class="kw">let </span>compressed = std::fs::read(file_path).expect(<span class="string">&quot;Could not read archive file&quot;</span>);
 		<span class="kw">let </span>archive = lz4_flex::decompress_size_prepended(<span class="kw-2">&amp;</span>compressed)
 			.expect(<span class="string">&quot;Could not decompress archive file&quot;</span>);
 		<span class="kw">let </span>archive_bytes = <span class="kw-2">&amp;</span>archive[..];
 		<span class="kw">let </span><span class="kw-2">mut </span>tar = tar::Archive::new(archive_bytes);
-		tar.unpack(<span class="kw-2">&amp;</span>output_pathbuf)
-			.expect(<span class="string">&quot;Could not extract archive&quot;</span>);
-	}
-
-	timer.stop();
-	<span class="macro">writeln!</span>(
-		buf_out,
-		<span class="string">&quot;Extracted archive(s) to filesystem (path: {}) in {:.2} seconds.&quot;</span>,
-		output_pathbuf.to_string_lossy(),
-		timer.elapsed_ms_whole()
-	)
-	.unwrap();
-	buf_out.flush().unwrap();
-}
-
-<span class="doccomment">/// Get an absolute, canonical path from a String
-///
-/// # Arguments
-///
-/// * `path` - The given String to evaluate
-</span><span class="kw">pub fn </span>get_absolute_path(path: String) -&gt; PathBuf {
-	<span class="kw">let </span>raw_pathbuf = PathBuf::from(<span class="kw-2">&amp;</span>path).clean();
-	<span class="kw">let </span>canonical_pathbuf_result = std::fs::canonicalize(<span class="kw-2">&amp;</span>raw_pathbuf);
-
-	<span class="kw">if </span>canonical_pathbuf_result.is_ok() {
-		canonical_pathbuf_result.unwrap()
-	} <span class="kw">else </span>{
-		<span class="kw">if </span>raw_pathbuf.is_absolute() {
-			raw_pathbuf
-		} <span class="kw">else if </span>raw_pathbuf.starts_with(<span class="string">&quot;~&quot;</span>) {
-			<span class="kw">let </span>home_dir = home::home_dir();
-			<span class="kw">if </span>home_dir.is_some() {
-				<span class="kw">let </span><span class="kw-2">mut </span>raw_str = raw_pathbuf.to_string_lossy().to_string();
-				raw_str = raw_str.replacen(
-					<span class="string">&#39;~&#39;</span>,
-					home_dir.unwrap().to_string_lossy().to_string().as_str(),
-					<span class="number">1</span>,
-				);
-				PathBuf::from(raw_str)
-			} <span class="kw">else </span>{
-				raw_pathbuf
-			}
-		} <span class="kw">else </span>{
-			std::env::current_dir().unwrap().join(<span class="kw-2">&amp;</span>raw_pathbuf)
-		}
-		.clean()
+		tar.unpack(<span class="kw-2">&amp;</span>output_path).expect(<span class="string">&quot;Could not extract archive&quot;</span>);
 	}
 }
 </code></pre></div>
-</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="larz" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.0-nightly (77429957a 2023-01-01)" data-search-js="search-181581080540673f.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-58836c674e2f7bd2.css" ></div></body></html>
+</section></main><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="larz" data-themes="" data-resource-suffix="" data-rustdoc-version="1.68.0-nightly (d6f99e535 2023-01-02)" data-search-js="search-181581080540673f.js" data-settings-js="settings-bebeae96e00e4617.js" data-settings-css="settings-58836c674e2f7bd2.css" ></div></body></html>
