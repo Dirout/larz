@@ -105,7 +105,7 @@ pub fn compress_archive_streaming<W: Write>(
 	output_path: PathBuf,
 	mut optional_logger: Option<&mut BufWriter<W>>,
 ) {
-	std::fs::create_dir_all(&output_path.parent().unwrap()).unwrap();
+	std::fs::create_dir_all(output_path.parent().unwrap()).unwrap();
 
 	let f = File::create(&output_path).expect("Unable to create file");
 	let buf = BufWriter::new(f);
@@ -203,7 +203,7 @@ pub fn compress_archive_memory<W: Write>(
 	output_path: PathBuf,
 	mut optional_logger: Option<&mut BufWriter<W>>,
 ) {
-	std::fs::create_dir_all(&output_path.parent().unwrap()).unwrap();
+	std::fs::create_dir_all(output_path.parent().unwrap()).unwrap();
 
 	let buf_tar: BufWriter<Vec<u8>> = BufWriter::new(Vec::new());
 	let mut tar = tar::Builder::new(buf_tar);
@@ -235,10 +235,8 @@ pub fn compress_archive_memory<W: Write>(
 	buf.write_all(&lz4_flex::block::compress_prepend_size(
 		&buf_tar_again.into_inner().unwrap(),
 	))
-	.expect(&format!(
-		"Could not write data to {}",
-		output_path.to_string_lossy()
-	)); // Write data to file
+	.unwrap_or_else(|_| panic!("Could not write data to {}",
+		output_path.to_string_lossy())); // Write data to file
 	buf.flush().unwrap();
 }
 
