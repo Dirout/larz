@@ -14,7 +14,7 @@
 
 //! # larz
 //! A simple, fast, and efficient file archiver and compressor.
-//! larz creates archives in the [Unix Standard TAR](https://en.wikipedia.org/wiki/Tar_(computing)#UStar_format) format, and compresses them using [LZ4](https://en.wikipedia.org/wiki/LZ4_(compression_algorithm)).
+//! larz creates archives in the [GNU TAR](https://en.wikipedia.org/wiki/Tar_(computing)#File_format) format, and compresses them using [LZ4](https://en.wikipedia.org/wiki/LZ4_(compression_algorithm)).
 //!
 //! ## Usage
 //!
@@ -45,8 +45,7 @@
 //!
 //! ## Features
 //! - `safe` - Ensures that compression and decompression are performed in a memory-safe manner. This is enabled by default.
-//! - `streaming` - larz supports streaming compression and decompression using the LZ4 frame format. This means that larz can compress and decompress files with larger sizes, without having to load the entire file into memory.\
-//! To enable this feature, use the `streaming` feature flag. This is enabled by default.
+//! - `streaming` - larz supports streaming compression and decompression using the LZ4 frame format. This means that larz can compress and decompress files with larger sizes, without having to load the entire file into memory. This is enabled by default.
 //!
 //! ## Installation
 //! Run `cargo add larz` to add larz to your `Cargo.toml` file.
@@ -56,7 +55,7 @@
 //! larz is licensed under the [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.en.html).
 //!
 //! ## Contributing
-//! Contributions are welcome! Please see [`CONTRIBUTING.md`](https://github.com/Dirout/larz/blob/master/CONTRIBUTING.md)) for more information.
+//! Contributions are welcome! Please see [`CONTRIBUTING.md`](https://github.com/Dirout/larz/blob/master/CONTRIBUTING.md) for more information.
 //!
 //! ## Authors
 //! - [Emil Sayahi](https://github.com/emmyoh)
