@@ -4,7 +4,7 @@
 %global crate larz
 
 Name:           rust-larz
-Version:        0.3.1
+Version:        0.3.2
 Release:        %autorelease
 Summary:        Archive tool for efficient decompression
 
@@ -63,6 +63,126 @@ This package contains library source intended for building other packages which
 use the "default" feature of the "%{crate}" crate.
 
 %files       -n %{name}+default-devel
+%ghost %{crate_instdir}/Cargo.toml
+
+%package     -n %{name}+bin-devel
+Summary:        %{summary}
+BuildArch:      noarch
+
+%description -n %{name}+bin-devel %{_description}
+
+This package contains library source intended for building other packages which
+use the "bin" feature of the "%{crate}" crate.
+
+%files       -n %{name}+bin-devel
+%ghost %{crate_instdir}/Cargo.toml
+
+%package     -n %{name}+clap-devel
+Summary:        %{summary}
+BuildArch:      noarch
+
+%description -n %{name}+clap-devel %{_description}
+
+This package contains library source intended for building other packages which
+use the "clap" feature of the "%{crate}" crate.
+
+%files       -n %{name}+clap-devel
+%ghost %{crate_instdir}/Cargo.toml
+
+%package     -n %{name}+clean-path-devel
+Summary:        %{summary}
+BuildArch:      noarch
+
+%description -n %{name}+clean-path-devel %{_description}
+
+This package contains library source intended for building other packages which
+use the "clean-path" feature of the "%{crate}" crate.
+
+%files       -n %{name}+clean-path-devel
+%ghost %{crate_instdir}/Cargo.toml
+
+%package     -n %{name}+home-devel
+Summary:        %{summary}
+BuildArch:      noarch
+
+%description -n %{name}+home-devel %{_description}
+
+This package contains library source intended for building other packages which
+use the "home" feature of the "%{crate}" crate.
+
+%files       -n %{name}+home-devel
+%ghost %{crate_instdir}/Cargo.toml
+
+%package     -n %{name}+lazy_static-devel
+Summary:        %{summary}
+BuildArch:      noarch
+
+%description -n %{name}+lazy_static-devel %{_description}
+
+This package contains library source intended for building other packages which
+use the "lazy_static" feature of the "%{crate}" crate.
+
+%files       -n %{name}+lazy_static-devel
+%ghost %{crate_instdir}/Cargo.toml
+
+%package     -n %{name}+mimalloc-devel
+Summary:        %{summary}
+BuildArch:      noarch
+
+%description -n %{name}+mimalloc-devel %{_description}
+
+This package contains library source intended for building other packages which
+use the "mimalloc" feature of the "%{crate}" crate.
+
+%files       -n %{name}+mimalloc-devel
+%ghost %{crate_instdir}/Cargo.toml
+
+%package     -n %{name}+safe-devel
+Summary:        %{summary}
+BuildArch:      noarch
+
+%description -n %{name}+safe-devel %{_description}
+
+This package contains library source intended for building other packages which
+use the "safe" feature of the "%{crate}" crate.
+
+%files       -n %{name}+safe-devel
+%ghost %{crate_instdir}/Cargo.toml
+
+%package     -n %{name}+streaming-devel
+Summary:        %{summary}
+BuildArch:      noarch
+
+%description -n %{name}+streaming-devel %{_description}
+
+This package contains library source intended for building other packages which
+use the "streaming" feature of the "%{crate}" crate.
+
+%files       -n %{name}+streaming-devel
+%ghost %{crate_instdir}/Cargo.toml
+
+%package     -n %{name}+ticky-devel
+Summary:        %{summary}
+BuildArch:      noarch
+
+%description -n %{name}+ticky-devel %{_description}
+
+This package contains library source intended for building other packages which
+use the "ticky" feature of the "%{crate}" crate.
+
+%files       -n %{name}+ticky-devel
+%ghost %{crate_instdir}/Cargo.toml
+
+%package     -n %{name}+wild-devel
+Summary:        %{summary}
+BuildArch:      noarch
+
+%description -n %{name}+wild-devel %{_description}
+
+This package contains library source intended for building other packages which
+use the "wild" feature of the "%{crate}" crate.
+
+%files       -n %{name}+wild-devel
 %ghost %{crate_instdir}/Cargo.toml
 
 %prep
