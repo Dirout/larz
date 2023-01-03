@@ -13,22 +13,23 @@
 */
 #![feature(panic_info_message)]
 
-use std::path::{Path, PathBuf};
-
 use clap::{arg, crate_version, value_parser, ArgMatches, Command};
+use clean_path::Clean;
 use lazy_static::lazy_static;
 use mimalloc::MiMalloc;
+use std::{
+	io::{BufWriter, StdoutLock, Write},
+	path::PathBuf,
+};
+use ticky::Stopwatch;
 
 #[global_allocator]
 /// The global memory allocator
 static GLOBAL: MiMalloc = MiMalloc;
 
 lazy_static! {
-  ///
-  static ref ARGS: Vec<std::ffi::OsString> = argfile::expand_args_from(wild::args_os(), argfile::parse_fromfile, argfile::PREFIX,).unwrap();
-
 	/// The command-line interface (CLI) of larz
-	static ref APP: clap::Command = Command::new("larz")
+	static ref MATCHES: ArgMatches = Command::new("larz")
 	.version(crate_version!())
 	.author("Emil Sayahi")
 	.about("larz is an archive tool for efficient decompression.")
@@ -38,17 +39,16 @@ lazy_static! {
 	  .arg(arg!(-c --conditions "Prints conditions information")))
 	.subcommand(Command::new("compress")
 	  .about("Archive & compress a file or set of files")
-	  .arg(arg!(<PATH> "Path to a file or directory").required(true).value_parser(value_parser!(PathBuf)).num_args(1..))
-	  .arg(arg!(-o --out "Specify an output file path for the archive").required(true).value_parser(value_parser!(PathBuf)))
+	  .arg(arg!(<PATH> "Path to a file or directory").required(true).value_parser(value_parser!(PathBuf)).num_args(1..).display_order(1))
+	  .arg(arg!(<OUT> "Specify an output file path for the archive").required(true).value_parser(value_parser!(PathBuf)).num_args(1))
 	  .arg(arg!(-m --memory "Perform this operation solely in memory")))
 	.subcommand(Command::new("extract")
-	  .about("Decompress & extract an archive")
-	  .arg(arg!(<PATH> "Path to an archive file").required(true).value_parser(value_parser!(PathBuf)).num_args(1..))
-	  .arg(arg!(-o --out "Specify an output directory path for the extracted contents").required(true).value_parser(value_parser!(PathBuf)))
-	  .arg(arg!(-m --memory "Perform this operation solely in memory")));
+	  .about("Extract & decompress an archive")
+	  .arg(arg!(<PATH> "Path to an archive file").required(true).value_parser(value_parser!(PathBuf)).num_args(1..).display_order(1))
+	  .arg(arg!(<OUT> "Specify an output directory path for the extracted contents").required(true).value_parser(value_parser!(PathBuf)).num_args(1))
+	  .arg(arg!(-m --memory "Perform this operation solely in memory")))
+  .get_matches_from(wild::args());
 
-	/// The arguments passed to the larz CLI
-	static ref MATCHES: ArgMatches = APP.clone().get_matches_from(ARGS.clone().into_iter());
 }
 
 /// The main function of larz's CLI
@@ -66,7 +66,7 @@ fn main() {
 
 	println!(
 		"
-    larz  Copyright (C) 2021, 2022  Emil Sayahi
+    larz  Copyright (C) 2021-2023  Emil Sayahi
     This program comes with ABSOLUTELY NO WARRANTY; for details type `larz show -w'.
     This is free software, and you are welcome to redistribute it
     under certain conditions; type `larz show -c' for details.
@@ -77,64 +77,142 @@ fn main() {
 		Some(("show", show_matches)) => {
 			show(show_matches);
 		}
-		Some(("compress", package_matches)) => {
-			compress(package_matches);
+		Some(("compress", compress_matches)) => {
+			compress(compress_matches);
 		}
-		Some(("extract", package_matches)) => {
-			extract(package_matches);
+		Some(("extract", extract_matches)) => {
+			extract(extract_matches);
 		}
-		None => println!("{}", APP.get_about().unwrap()),
+		None => println!("larz {}", crate_version!()),
 		_ => unreachable!(), // If all subcommands are defined above, anything else is unreachable!()
 	}
 }
 
+/// Extract & decompress an archive
+///
+/// # Arguments
+///
+/// `PATH` - Path to an archive file
+///
+/// `out` - Specify an output directory path for the extracted contents
+///
+/// `memory` - Perform this operation solely in memory
 fn extract(matches: &clap::ArgMatches) {
 	let paths: Vec<PathBuf> = matches
-		.get_many("PATH")
-		.expect("No file paths were given")
-		.map(|&p| Path::new(p).to_path_buf())
+		.get_many::<PathBuf>("PATH")
+		.expect("❌ No file paths were given")
+		.map(|p| get_absolute_path(p.to_owned()))
 		.collect();
-	let output_path_buf_input = matches
-		.get_one::<PathBuf>("out")
-		.ok_or(anyhow::anyhow!("❌ No output path was given"))
+	let output_pathbuf_input = matches
+		.get_one::<PathBuf>("OUT")
+		.ok_or("❌ No output path was given")
 		.unwrap();
-	let output_path_buf = match std::fs::canonicalize(output_path_buf_input) {
-		Ok(p) => p,
-		Err(_) => std::env::current_dir()
-			.unwrap()
-			.join(path_clean::clean(output_path_buf_input.to_str().unwrap())),
-	};
-	let output_path = output_path_buf.to_str().unwrap();
-	let in_memory = matches.contains_id("memory");
+	let output_pathbuf = get_absolute_path(output_pathbuf_input.to_owned());
+	let in_memory = matches.get_flag("memory");
+
+	let stdout = std::io::stdout();
+	let lock = stdout.lock();
+	let mut buf_out = BufWriter::new(lock);
+	let mut timer = Stopwatch::start_new();
+	let absolute_output_pathbuf = get_absolute_path(output_pathbuf.clone());
+
 	if in_memory {
-		larz::extract_archive_memory(paths, output_path);
+		larz::extract_archive_memory(paths, absolute_output_pathbuf);
 	} else {
-		larz::extract_archive_streaming(paths, output_path);
+		larz::extract_archive_streaming(paths, absolute_output_pathbuf);
 	}
+
+	timer.stop();
+	writeln!(
+		buf_out,
+		"\n⏰ Extracted archive(s) to filesystem (path: '{}') in {:.2} seconds.",
+		output_pathbuf.to_string_lossy(),
+		timer.elapsed_s()
+	)
+	.unwrap();
+	buf_out.flush().unwrap();
 }
 
+/// Archive & compress a file or set of files
+///
+/// # Arguments
+///
+/// `PATH` - Path to a file or directory
+///
+/// `out` - Specify an output file path for the archive
+///
+/// `memory` - Perform this operation solely in memory
 fn compress(matches: &clap::ArgMatches) {
 	let paths: Vec<PathBuf> = matches
-		.get_many("PATH")
-		.expect("No file paths were given")
-		.map(|&p| Path::new(p).to_path_buf())
+		.get_many::<PathBuf>("PATH")
+		.expect("❌ No file paths were given")
+		.map(|p| get_absolute_path(p.to_owned()))
 		.collect();
-	let output_path_buf_input = matches
-		.get_one::<PathBuf>("out")
-		.ok_or(anyhow::anyhow!("❌ No output path was given"))
+	let output_pathbuf_input = matches
+		.get_one::<PathBuf>("OUT")
+		.ok_or("❌ No output path was given")
 		.unwrap();
-	let output_path_buf = match std::fs::canonicalize(output_path_buf_input) {
-		Ok(p) => p,
-		Err(_) => std::env::current_dir()
-			.unwrap()
-			.join(path_clean::clean(output_path_buf_input.to_str().unwrap())),
-	};
-	let output_path = output_path_buf.to_str().unwrap();
-	let in_memory = matches.contains_id("memory");
+	let output_pathbuf = get_absolute_path(output_pathbuf_input.to_owned());
+	let in_memory = matches.get_flag("memory");
+
+	let stdout = std::io::stdout();
+	let lock = stdout.lock();
+	let mut buf_out = BufWriter::new(lock);
+
+	let mut timer = Stopwatch::start_new();
+
+	let output_pathbuf_clone = output_pathbuf.clone();
+	let output_file_name = output_pathbuf_clone.file_stem().unwrap().to_str().unwrap();
+
 	if in_memory {
-		larz::compress_archive_memory(paths, output_path);
+		larz::compress_archive_memory::<StdoutLock>(paths, output_pathbuf, Some(&mut buf_out));
 	} else {
-		larz::compress_archive_streaming(paths, output_path);
+		larz::compress_archive_streaming::<StdoutLock>(paths, output_pathbuf, Some(&mut buf_out));
+	}
+
+	timer.stop();
+	writeln!(
+		buf_out,
+		"\n⏰ Wrote archive '{}' to filesystem (path: '{}') in {:.2} seconds.",
+		output_file_name,
+		output_pathbuf_clone.to_string_lossy(),
+		timer.elapsed_s()
+	)
+	.unwrap();
+	buf_out.flush().unwrap();
+}
+
+/// Get an absolute, canonical path from a `PathBuf`
+///
+/// # Arguments
+///
+/// * `path` - The given `PathBuf` to evaluate
+fn get_absolute_path(path: PathBuf) -> PathBuf {
+	let cleaned_pathbuf = path.clean();
+	let canonical_pathbuf_result = std::fs::canonicalize(&cleaned_pathbuf);
+
+	if canonical_pathbuf_result.is_ok() {
+		canonical_pathbuf_result.unwrap()
+	} else {
+		if cleaned_pathbuf.is_absolute() {
+			cleaned_pathbuf
+		} else if cleaned_pathbuf.starts_with("~") {
+			let home_dir = home::home_dir();
+			if home_dir.is_some() {
+				let mut raw_str = cleaned_pathbuf.to_string_lossy().to_string();
+				raw_str = raw_str.replacen(
+					'~',
+					home_dir.unwrap().to_string_lossy().to_string().as_str(),
+					1,
+				);
+				PathBuf::from(raw_str)
+			} else {
+				cleaned_pathbuf
+			}
+		} else {
+			std::env::current_dir().unwrap().join(&cleaned_pathbuf)
+		}
+		.clean()
 	}
 }
 
@@ -146,7 +224,7 @@ fn compress(matches: &clap::ArgMatches) {
 ///
 /// * `conditions` - Prints conditions information
 fn show(matches: &clap::ArgMatches) {
-	if matches.contains_id("warranty") {
+	if matches.get_flag("warranty") {
 		// "larz show -w" was run
 		println!(
 			"
@@ -182,7 +260,7 @@ fn show(matches: &clap::ArgMatches) {
   copy of the Program in return for a fee.
   "
 		);
-	} else if matches.contains_id("conditions") {
+	} else if matches.get_flag("conditions") {
 		// "larz show -c" was run
 		println!(
 			"

@@ -11,47 +11,118 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with larz.  If not, see <https://www.gnu.org/licenses/>.
 */
-use anyhow::Context;
-use path_clean::PathClean;
+
+//! # larz
+//! A simple, fast, and efficient file archiver and compressor.
+//! larz creates archives in the [Unix Standard TAR](https://en.wikipedia.org/wiki/Tar_(computing)#UStar_format) format, and compresses them using [LZ4](https://en.wikipedia.org/wiki/LZ4_(compression_algorithm)).
+//!
+//! ## Usage
+//!
+//! ### Compression
+//!
+//! ```rust
+//! use larz::compress_archive_memory;
+//! use std::path::PathBuf;
+//! use std::io::StdoutLock;
+//!
+//! let paths = vec![PathBuf::from("path/to/file"), PathBuf::from("path/to/directory")];
+//! let output_path = PathBuf::from("path/to/output.larz");
+//!
+//! compress_archive_memory::<StdoutLock>(paths, output_path, None);
+//! ```
+//!
+//! ### Decompression
+//!
+//! ```rust
+//! use larz::extract_archive_memory;
+//! use std::path::PathBuf;
+//!
+//! let paths = vec![PathBuf::from("path/to/archive.larz")];
+//! let output_path = PathBuf::from("path/to/output");
+//!
+//! extract_archive_memory(paths, output_path);
+//! ```
+//!
+//! ## Features
+//! - `safe` - Ensures that compression and decompression are performed in a memory-safe manner. This is enabled by default.
+//! - `streaming` - larz supports streaming compression and decompression using the LZ4 frame format. This means that larz can compress and decompress files with larger sizes, without having to load the entire file into memory.\
+//! To enable this feature, use the `streaming` feature flag. This is enabled by default.
+//!
+//! ## Installation
+//! Run `cargo add larz` to add larz to your `Cargo.toml` file.
+//! If you intend on using `larz` as a tool, run `cargo install larz`.
+//!
+//! ## License
+//! larz is licensed under the [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.en.html).
+//!
+//! ## Contributing
+//! Contributions are welcome! Please see [`CONTRIBUTING.md`](https://github.com/Dirout/larz/blob/master/CONTRIBUTING.md)) for more information.
+//!
+//! ## Authors
+//! - [Emil Sayahi](https://github.com/emmyoh)
+//!
+//! ## Acknowledgements
+//! - [`lz4_flex`](https://crates.io/crates/lz4_flex) - The LZ4 compression library used by larz.
+//! - [`tar`](https://crates.io/crates/tar) - The TAR archiving library used by larz.
+
+#![warn(missing_docs)]
+
 use std::fs::File;
 use std::io::BufReader;
 use std::io::BufWriter;
 use std::io::Write;
 use std::path::PathBuf;
-use ticky::Stopwatch;
 
-/// Archive a file or set of files
+/// Archive & compress a file or set of files
 ///
 /// # Arguments
 ///
-/// * `PATH` - Path to a file or directory (required)
-pub fn compress_archive_streaming(paths: Vec<String>, output_path: String) {
-	let stdout = std::io::stdout();
-	let lock = stdout.lock();
-	let mut buf_out = BufWriter::new(lock);
+/// * `paths` - A list of paths pointing to files or directories intended to be archived
+///
+/// * `output_path` - Path to write the archive to
+///
+/// * `optional_logger` - An optional `BufWriter` to log information to
+///
+/// # Panics
+///
+/// This function will panic if any of the input paths are invalid or cannot be read, if the output path is invalid, or if the archive cannot be written to.
+///
+/// # Examples
+///
+/// ```rust
+/// use larz::compress_archive_streaming;
+/// use std::path::PathBuf;
+/// use std::io::StdoutLock;
+///
+/// let paths = vec![PathBuf::from("path/to/file"), PathBuf::from("path/to/directory")];
+/// let output_path = PathBuf::from("path/to/output.larz");
+///
+/// compress_archive_streaming::<StdoutLock>(paths, output_path, None);
+/// ```
+#[cfg(feature = "streaming")]
+pub fn compress_archive_streaming<W: Write>(
+	paths: Vec<PathBuf>,
+	output_path: PathBuf,
+	mut optional_logger: Option<&mut BufWriter<W>>,
+) {
+	std::fs::create_dir_all(&output_path.parent().unwrap()).unwrap();
 
-	let mut timer = Stopwatch::start_new();
-
-	let output_pathbuf = get_absolute_path(output_path);
-	std::fs::create_dir_all(&output_pathbuf.parent().unwrap()).unwrap();
-	let output_file_name = output_pathbuf.file_stem().unwrap().to_str().unwrap();
-
-	let f = File::create(&output_pathbuf).expect("Unable to create file");
+	let f = File::create(&output_path).expect("Unable to create file");
 	let buf = BufWriter::new(f);
 	let compressor = lz4_flex::frame::FrameEncoder::new(buf);
 	let mut tar = tar::Builder::new(compressor);
 
 	for fs_path in paths {
-		let fs_pathbuf = get_absolute_path(fs_path);
-
-		writeln!(buf_out, "Compressing {} … ", fs_pathbuf.to_string_lossy()).unwrap();
-		match fs_pathbuf.is_dir() {
+		if let Some(ref mut logger) = optional_logger {
+			writeln!(logger, "Compressing '{}' … ", fs_path.to_string_lossy()).unwrap();
+		}
+		match fs_path.is_dir() {
 			true => {
-				tar.append_dir_all(".", fs_pathbuf)
+				tar.append_dir_all(".", fs_path)
 					.expect("Failed to write to archive");
 			}
 			false => {
-				tar.append_path(fs_pathbuf)
+				tar.append_path(fs_path)
 					.expect("Failed to write to archive");
 			}
 		}
@@ -63,83 +134,91 @@ pub fn compress_archive_streaming(paths: Vec<String>, output_path: String) {
 		.expect("Unable to finish with compression")
 		.flush()
 		.unwrap();
-	timer.stop();
-
-	writeln!(
-		buf_out,
-		"\nWrote archive '{}' to filesystem (path: {}) in {:.2} seconds.",
-		output_file_name,
-		output_pathbuf.to_string_lossy(),
-		timer.elapsed_ms_whole()
-	)
-	.unwrap();
-	buf_out.flush().unwrap();
 }
 
-/// Decompress an archive
+/// Extract & decompress an existing archive
 ///
 /// # Arguments
 ///
-/// * `PATH` - Path to an archive (required)
-pub fn extract_archive_streaming(paths: Vec<String>, output_path: String) {
-	let stdout = std::io::stdout();
-	let lock = stdout.lock();
-	let mut buf_out = BufWriter::new(lock);
-	let mut timer = Stopwatch::start_new();
-	let output_pathbuf = get_absolute_path(output_path);
-	std::fs::create_dir_all(&output_pathbuf).unwrap();
+/// * `paths` - A list of paths pointing to `larz` archives
+///
+/// * `output_path` - Path to write the extracted files to
+///
+/// # Panics
+///
+/// This function will panic if any of the input paths are invalid or cannot be read, or if the output path is invalid or cannot be written to.
+///
+/// # Examples
+///
+/// ```rust
+/// use larz::extract_archive_streaming;
+/// use std::path::PathBuf;
+///
+/// let paths = vec![PathBuf::from("path/to/archive.larz")];
+/// let output_path = PathBuf::from("path/to/output");
+///
+/// extract_archive_streaming(paths, output_path);
+/// ```
+#[cfg(feature = "streaming")]
+pub fn extract_archive_streaming(paths: Vec<PathBuf>, output_path: PathBuf) {
+	std::fs::create_dir_all(&output_path).unwrap();
 
 	for file_path in paths {
-		let file_pathbuf = get_absolute_path(file_path);
-
-		let f = std::fs::File::open(file_pathbuf).expect("Could not read archive file");
+		let f = std::fs::File::open(file_path).expect("Could not read archive file");
 		let buf = BufReader::new(f);
 		let extractor = lz4_flex::frame::FrameDecoder::new(buf);
 		let mut tar = tar::Archive::new(extractor);
-		tar.unpack(&output_pathbuf)
-			.expect("Could not extract archive");
+		tar.unpack(&output_path).expect("Could not extract archive");
 	}
-
-	timer.stop();
-	writeln!(
-		buf_out,
-		"Extracted archive(s) to filesystem (path: {}) in {:.2} seconds.",
-		output_pathbuf.to_string_lossy(),
-		timer.elapsed_ms_whole()
-	)
-	.unwrap();
-	buf_out.flush().unwrap();
 }
 
-/// Archive a file or set of files using only memory
+/// Archive & compress a file or set of files, in memory
 ///
 /// # Arguments
 ///
-/// * `PATH` - Path to a file or directory (required)
-pub fn compress_archive_memory(paths: Vec<String>, output_path: String) {
-	let stdout = std::io::stdout();
-	let lock = stdout.lock();
-	let mut buf_out = BufWriter::new(lock);
-	let mut timer = Stopwatch::start_new();
-
-	let output_pathbuf = get_absolute_path(output_path);
-	std::fs::create_dir_all(&output_pathbuf.parent().unwrap()).unwrap();
-	let output_file_name = output_pathbuf.file_stem().unwrap().to_str().unwrap();
+/// * `paths` - A list of paths pointing to files or directories intended to be archived
+///
+/// * `output_path` - Path to write the archive to
+///
+/// * `optional_logger` - An optional `BufWriter` to log information to
+///
+/// # Panics
+///
+/// This function will panic if any of the input paths are invalid or cannot be read, if the output path is invalid, or if the archive cannot be written to.
+///
+/// # Examples
+///
+/// ```rust
+/// use larz::compress_archive_memory;
+/// use std::path::PathBuf;
+/// use std::io::StdoutLock;
+///
+/// let paths = vec![PathBuf::from("path/to/file"), PathBuf::from("path/to/directory")];
+/// let output_path = PathBuf::from("path/to/output.larz");
+///
+/// compress_archive_memory::<StdoutLock>(paths, output_path, None);
+/// ```
+pub fn compress_archive_memory<W: Write>(
+	paths: Vec<PathBuf>,
+	output_path: PathBuf,
+	mut optional_logger: Option<&mut BufWriter<W>>,
+) {
+	std::fs::create_dir_all(&output_path.parent().unwrap()).unwrap();
 
 	let buf_tar: BufWriter<Vec<u8>> = BufWriter::new(Vec::new());
 	let mut tar = tar::Builder::new(buf_tar);
 
 	for fs_path in paths {
-		let fs_pathbuf = get_absolute_path(fs_path);
-
-		writeln!(buf_out, "Compressing {} … ", fs_pathbuf.to_string_lossy()).unwrap();
-		match fs_pathbuf.is_dir() {
+		if let Some(ref mut logger) = optional_logger {
+			writeln!(logger, "Compressing '{}' … ", fs_path.to_string_lossy()).unwrap();
+		}
+		match fs_path.is_dir() {
 			true => {
-				tar.append_dir_all(".", fs_pathbuf)
+				tar.append_dir_all(".", fs_path)
 					.expect("Failed to write to archive");
 			}
 			false => {
-				tar.append_path(fs_pathbuf)
+				tar.append_path(fs_path)
 					.expect("Failed to write to archive");
 			}
 		}
@@ -150,100 +229,51 @@ pub fn compress_archive_memory(paths: Vec<String>, output_path: String) {
 	let mut buf_tar_again = tar.into_inner().unwrap();
 	buf_tar_again.flush().unwrap();
 
-	std::fs::create_dir_all(output_pathbuf.parent().unwrap()).unwrap();
-	let f = File::create(&output_pathbuf).expect("Unable to create file");
+	std::fs::create_dir_all(output_path.parent().unwrap()).unwrap();
+	let f = File::create(&output_path).expect("Unable to create file");
 	let mut buf = BufWriter::new(f);
 	buf.write_all(&lz4_flex::block::compress_prepend_size(
 		&buf_tar_again.into_inner().unwrap(),
 	))
-	.with_context(|| {
-		format!(
-			"Could not write data to {}",
-			output_pathbuf.to_string_lossy()
-		)
-	})
-	.unwrap(); // Write data to file
+	.expect(&format!(
+		"Could not write data to {}",
+		output_path.to_string_lossy()
+	)); // Write data to file
 	buf.flush().unwrap();
-
-	timer.stop();
-
-	writeln!(
-		buf_out,
-		"\nWrote archive '{}' to filesystem (path: {}) in {:.2} seconds.",
-		output_file_name,
-		output_pathbuf.to_string_lossy(),
-		timer.elapsed_ms_whole()
-	)
-	.unwrap();
-	buf_out.flush().unwrap();
 }
 
-/// Decompress an archive created using only memory
+/// Extract & decompress an existing archive, in memory
 ///
 /// # Arguments
 ///
-/// * `PATH` - Path to an archive (required)
-pub fn extract_archive_memory(paths: Vec<String>, output_path: String) {
-	let stdout = std::io::stdout();
-	let lock = stdout.lock();
-	let mut buf_out = BufWriter::new(lock);
-	let mut timer = Stopwatch::start_new();
-	let output_pathbuf = get_absolute_path(output_path);
-	std::fs::create_dir_all(&output_pathbuf).unwrap();
+/// * `paths` - A list of paths pointing to `larz` archives
+///
+/// * `output_path` - Path to write the extracted files to
+///
+/// # Panics
+///
+/// This function will panic if any of the input paths are invalid or cannot be read, or if the output path is invalid or cannot be written to.
+///
+/// # Examples
+///
+/// ```rust
+/// use larz::extract_archive_memory;
+/// use std::path::PathBuf;
+///
+/// let paths = vec![PathBuf::from("path/to/archive.larz")];
+/// let output_path = PathBuf::from("path/to/output");
+///
+/// extract_archive_memory(paths, output_path);
+/// ```
+pub fn extract_archive_memory(paths: Vec<PathBuf>, output_path: PathBuf) {
+	std::fs::create_dir_all(&output_path).unwrap();
 
 	for file_path in paths {
-		let file_pathbuf = get_absolute_path(file_path);
-
-		let compressed = std::fs::read(file_pathbuf).expect("Could not read archive file");
+		let compressed = std::fs::read(file_path).expect("Could not read archive file");
 		let archive = lz4_flex::decompress_size_prepended(&compressed)
 			.expect("Could not decompress archive file");
 		let archive_bytes = &archive[..];
 		let mut tar = tar::Archive::new(archive_bytes);
-		tar.unpack(&output_pathbuf)
-			.expect("Could not extract archive");
-	}
-
-	timer.stop();
-	writeln!(
-		buf_out,
-		"Extracted archive(s) to filesystem (path: {}) in {:.2} seconds.",
-		output_pathbuf.to_string_lossy(),
-		timer.elapsed_ms_whole()
-	)
-	.unwrap();
-	buf_out.flush().unwrap();
-}
-
-/// Get an absolute, canonical path from a String
-///
-/// # Arguments
-///
-/// * `path` - The given String to evaluate
-pub fn get_absolute_path(path: String) -> PathBuf {
-	let raw_pathbuf = PathBuf::from(&path).clean();
-	let canonical_pathbuf_result = std::fs::canonicalize(&raw_pathbuf);
-
-	if canonical_pathbuf_result.is_ok() {
-		canonical_pathbuf_result.unwrap()
-	} else {
-		if raw_pathbuf.is_absolute() {
-			raw_pathbuf
-		} else if raw_pathbuf.starts_with("~") {
-			let home_dir = home::home_dir();
-			if home_dir.is_some() {
-				let mut raw_str = raw_pathbuf.to_string_lossy().to_string();
-				raw_str = raw_str.replacen(
-					'~',
-					home_dir.unwrap().to_string_lossy().to_string().as_str(),
-					1,
-				);
-				PathBuf::from(raw_str)
-			} else {
-				raw_pathbuf
-			}
-		} else {
-			std::env::current_dir().unwrap().join(&raw_pathbuf)
-		}
-		.clean()
+		tar.unpack(&output_path).expect("Could not extract archive");
 	}
 }
