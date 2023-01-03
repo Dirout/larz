@@ -235,8 +235,7 @@ pub fn compress_archive_memory<W: Write>(
 	buf.write_all(&lz4_flex::block::compress_prepend_size(
 		&buf_tar_again.into_inner().unwrap(),
 	))
-	.unwrap_or_else(|_| panic!("Could not write data to {}",
-		output_path.to_string_lossy())); // Write data to file
+	.unwrap_or_else(|_| panic!("Could not write data to {}", output_path.to_string_lossy())); // Write data to file
 	buf.flush().unwrap();
 }
 
