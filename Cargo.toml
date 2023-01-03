@@ -50,7 +50,7 @@ wild = { version = "2.1.0", optional = true }
 
 [features]
 default = ["safe", "streaming"]
-bin = ["dep:clap", "dep:clean-path", "dep:home", "dep:lazy_static", "dep:mimalloc", "dep:ticky", "dep:wild", "streaming", "safe"]
+bin = ["dep:clap", "dep:clean-path", "dep:home", "dep:lazy_static", "dep:mimalloc", "dep:ticky", "dep:wild", "default"]
 safe = ["lz4_flex/safe-encode", "lz4_flex/safe-decode", "lz4_flex/checked-decode"]
 streaming = ["lz4_flex/frame"]
 
@@ -79,11 +79,11 @@ assets = [
     ["COPYING", "usr/share/doc/larz/COPYING", "644"],
 ]
 
-[package.metadata.rpm]
-package = "larz"
-
-[package.metadata.rpm.cargo]
-buildflags = ["--release"]
-
-[package.metadata.rpm.targets]
-larz = { path = "/usr/bin/larz" }
+[package.metadata.generate-rpm]
+assets = [
+  { source = "target/release/larz", dest = "/usr/bin/larz", mode = "755" },
+  { source = "target/release/liblarz.so", dest = "/usr/lib/liblarz.so", mode = "755" },
+  { source = "target/release/liblarz.a", dest = "/usr/lib/liblarz.a", mode = "755" },
+  { source = "README", dest = "/usr/share/doc/ticky/README", mode = "644" },
+  { source = "COPYING", dest = "/usr/share/doc/ticky/COPYING", mode = "644" },
+]

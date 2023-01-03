@@ -191,18 +191,18 @@ fn get_absolute_path(path: PathBuf) -> PathBuf {
 	let cleaned_pathbuf = path.clean();
 	let canonical_pathbuf_result = std::fs::canonicalize(&cleaned_pathbuf);
 
-	if canonical_pathbuf_result.is_ok() {
-		canonical_pathbuf_result.unwrap()
+	if let Ok(canonical_pathbuf_result_value) = canonical_pathbuf_result {
+		canonical_pathbuf_result_value
 	} else {
 		if cleaned_pathbuf.is_absolute() {
 			cleaned_pathbuf
 		} else if cleaned_pathbuf.starts_with("~") {
 			let home_dir = home::home_dir();
-			if home_dir.is_some() {
+			if let Some(home_dir_pathbuf) = home_dir {
 				let mut raw_str = cleaned_pathbuf.to_string_lossy().to_string();
 				raw_str = raw_str.replacen(
 					'~',
-					home_dir.unwrap().to_string_lossy().to_string().as_str(),
+					home_dir_pathbuf.to_string_lossy().to_string().as_str(),
 					1,
 				);
 				PathBuf::from(raw_str)

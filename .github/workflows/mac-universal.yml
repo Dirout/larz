@@ -34,12 +34,12 @@ jobs:
         with:
           use-cross: false
           command: build
-          args: --release --target x86_64-apple-darwin
+          args: --release --target x86_64-apple-darwin --all-features
       - name: Build larz for AARCH64
         run: |
           SDKROOT=$(xcrun -sdk macosx --show-sdk-path) \
           MACOSX_DEPLOYMENT_TARGET=$(xcrun -sdk macosx --show-sdk-platform-version) \
-          cargo build --release --target=aarch64-apple-darwin
+          cargo build --release --target=aarch64-apple-darwin --all-features
       - name: Prepare larz for upload
         run: |
           lipo -create \
