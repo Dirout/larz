@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":[["compress_archive_memory","Archive & compress a file or set of files, in memory"],["compress_archive_streaming","Archive & compress a file or set of files"],["extract_archive_memory","Extract & decompress an existing archive, in memory"],["extract_archive_streaming","Extract & decompress an existing archive"]]};
+window.SIDEBAR_ITEMS = {"fn":["compress_archive_memory","compress_archive_streaming","extract_archive_memory","extract_archive_streaming"]};
