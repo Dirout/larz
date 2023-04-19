@@ -17,6 +17,11 @@ srpm_build_deps:
   - rust-packaging
 jobs:
   - job: copr_build
+    trigger: pull_request
+    targets:
+    - fedora-all
+  
+  - job: copr_build
     trigger: commit
     branch: master
     targets:
