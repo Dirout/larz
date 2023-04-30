@@ -38,12 +38,12 @@ required-features = ["bin"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clap = { version = "4.2.4", features = ["cargo", "suggestions", "color", "wrap_help", "unicode"], optional = true }
+clap = { version = "4.2.5", features = ["cargo", "suggestions", "color", "wrap_help", "unicode"], optional = true }
 clean-path = { version = "0.2.1", optional = true }
-home = { version = "0.5.4", optional = true }
+home = { version = "0.5.5", optional = true }
 lazy_static = { version = "1.4.0", optional = true }
 lz4_flex = { version = "0.9.5", default-features = false }
-mimalloc = { version = "0.1.36", default-features = false, optional = true }
+mimalloc = { version = "0.1.37", default-features = false, optional = true }
 tar = "0.4.38"
 ticky = { git = "https://github.com/Dirout/ticky.git", optional = true }
 wild = { version = "2.1.0", optional = true }
