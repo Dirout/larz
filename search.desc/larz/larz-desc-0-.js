@@ -1,1 +1,0 @@
-searchState.loadedDescShard("larz", 0, "larz\nArchive &amp; compress a file or set of files, in memory\nArchive &amp; compress a file or set of files\nExtract &amp; decompress an existing archive, in memory\nExtract &amp; decompress an existing archive")

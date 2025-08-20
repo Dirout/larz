@@ -1,0 +1,1 @@
+rd_("dlarzCgExtract &amp; decompress an existing archive, in memoryChArchive &amp; compress a file or set of files, in memoryBlExtract &amp; decompress an existing archiveBmArchive &amp; compress a file or set of files")
