@@ -27,7 +27,7 @@ jobs:
           command: deb
           args: --separate-debug-symbols -- --all-features --target x86_64-unknown-linux-gnu
       - name: Upload larz build artifact to GitHub
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: x86_64-larz.deb.gnu+linux
           path: ./target/debian/larz_*_amd64.deb

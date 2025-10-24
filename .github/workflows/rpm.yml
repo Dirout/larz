@@ -57,7 +57,7 @@ jobs:
           cargo generate-rpm
           tree -a ./
       - name: Upload larz package to GitHub
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: x86_64-larz.rpm.gnu+linux
           path: "./larz/target/generate-rpm/*.rpm"
