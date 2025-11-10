@@ -74,19 +74,19 @@ jobs:
           liblarz.dylib \
           liblarz.a
       - name: Upload larz AMD64 build artifacts to GitHub
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: x86_64-larz.osx
           path: ./target/x86_64-apple-darwin/release/x86_64-larz.osx.tar
           if-no-files-found: error
       - name: Upload larz ARM64 build artifacts to GitHub
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: aarch64-larz.osx
           path: ./target/aarch64-apple-darwin/release/aarch64-larz.osx.tar
           if-no-files-found: error
       - name: Upload larz Universal build artifacts to GitHub
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: universal-larz.osx
           path: ./target/universal-larz.osx.tar
